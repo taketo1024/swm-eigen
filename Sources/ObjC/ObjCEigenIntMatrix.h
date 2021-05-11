@@ -1,42 +1,43 @@
 #pragma once
 
 #import <Foundation/Foundation.h>
+#import "basic.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ObjCEigenIntMatrix: NSObject
 
-@property (readonly) ptrdiff_t rows;
-@property (readonly) ptrdiff_t cols;
+@property (readonly) int_t rows;
+@property (readonly) int_t cols;
 
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)copy;
 
-+ (instancetype)matrixWithZeros:(ptrdiff_t)rows cols:(ptrdiff_t)cols
++ (instancetype)matrixWithZeros:(int_t)rows cols:(int_t)cols
 NS_SWIFT_NAME(zeros(rows:cols:));
-+ (instancetype)matrixWithIdentity:(ptrdiff_t)rows cols:(ptrdiff_t)cols
++ (instancetype)matrixWithIdentity:(int_t)rows cols:(int_t)cols
 NS_SWIFT_NAME(identity(rows:cols:));
 
-- (ptrdiff_t)valueAtRow:(ptrdiff_t)row col:(ptrdiff_t)col
+- (int_t)valueAtRow:(int_t)row col:(int_t)col
 NS_SWIFT_NAME(value(row:col:));
-- (void)setValue:(ptrdiff_t)value row:(ptrdiff_t)row col:(ptrdiff_t)col
+- (void)setValue:(int_t)value row:(int_t)row col:(int_t)col
 NS_SWIFT_NAME(setValue(_:row:col:));
 
 - (bool)isZero;
 - (instancetype)transposed;
 - (instancetype)inverse;
 
-- (ptrdiff_t)determinant;
-- (ptrdiff_t)trace;
-- (instancetype)submatrixFromRow:(ptrdiff_t)i col:(ptrdiff_t)j width:(ptrdiff_t)w height:(ptrdiff_t)h;
-- (void)serializeInto:(ptrdiff_t *)array;
+- (int_t)determinant;
+- (int_t)trace;
+- (instancetype)submatrixFromRow:(int_t)i col:(int_t)j width:(int_t)w height:(int_t)h;
+- (void)serializeInto:(int_t *)array;
 
 - (bool)equals:(id)other;
 - (instancetype)add:(id)other;
 - (instancetype)negate;
 - (instancetype)sub:(id)other;
-- (instancetype)mulLeft:(ptrdiff_t) r;
-- (instancetype)mulRight:(ptrdiff_t) r;
+- (instancetype)mulLeft:(int_t) r;
+- (instancetype)mulRight:(int_t) r;
 - (instancetype)mul:(id)other;
 
 @end

@@ -7,7 +7,7 @@
 
 #import <iostream>
 
-using Ring = ptrdiff_t;
+using Ring = int_t;
 using Matrix = Eigen::Matrix<Ring, Eigen::Dynamic, Eigen::Dynamic>;
 using Map = Eigen::Map<Matrix>;
 
@@ -32,27 +32,27 @@ using Map = Eigen::Map<Matrix>;
     return [[ObjCEigenIntMatrix alloc] initWithMatrix:copy];
 }
 
-- (ptrdiff_t)rows {
+- (int_t)rows {
     return _matrix.rows();
 }
 
-- (ptrdiff_t)cols {
+- (int_t)cols {
     return _matrix.cols();
 }
 
-+ (instancetype)matrixWithZeros:(ptrdiff_t)rows cols:(ptrdiff_t)cols {
++ (instancetype)matrixWithZeros:(int_t)rows cols:(int_t)cols {
     return [[ObjCEigenIntMatrix alloc] initWithMatrix:Matrix::Zero(rows, cols)];
 }
 
-+ (instancetype)matrixWithIdentity:(ptrdiff_t)rows cols:(ptrdiff_t)cols {
++ (instancetype)matrixWithIdentity:(int_t)rows cols:(int_t)cols {
     return [[ObjCEigenIntMatrix alloc] initWithMatrix:Matrix::Identity(rows, cols)];
 }
 
-- (Ring)valueAtRow:(ptrdiff_t)row col:(ptrdiff_t)col {
+- (Ring)valueAtRow:(int_t)row col:(int_t)col {
     return _matrix(row, col);
 }
 
-- (void)setValue:(Ring)value row:(ptrdiff_t)row col:(ptrdiff_t)col {
+- (void)setValue:(Ring)value row:(int_t)row col:(int_t)col {
     _matrix(row, col) = value;
 }
 
@@ -76,7 +76,7 @@ using Map = Eigen::Map<Matrix>;
     NSAssert(false, @"unavailable");
 }
 
--(instancetype)submatrixFromRow:(ptrdiff_t)i col:(ptrdiff_t)j width:(ptrdiff_t)w height:(ptrdiff_t)h {
+-(instancetype)submatrixFromRow:(int_t)i col:(int_t)j width:(int_t)w height:(int_t)h {
     return [[ObjCEigenIntMatrix alloc] initWithMatrix:_matrix.block(i, j, w, h)];
 }
 

@@ -1,25 +1,26 @@
 #pragma once
 
 #import <Foundation/Foundation.h>
+#import "basic.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ObjCEigenDoubleMatrix: NSObject
 
-@property (readonly) ptrdiff_t rows;
-@property (readonly) ptrdiff_t cols;
+@property (readonly) int_t rows;
+@property (readonly) int_t cols;
 
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)copy;
 
-+ (instancetype)matrixWithZeros:(ptrdiff_t)rows cols:(ptrdiff_t)cols
++ (instancetype)matrixWithZeros:(int_t)rows cols:(int_t)cols
 NS_SWIFT_NAME(zeros(rows:cols:));
-+ (instancetype)matrixWithIdentity:(ptrdiff_t)rows cols:(ptrdiff_t)cols
++ (instancetype)matrixWithIdentity:(int_t)rows cols:(int_t)cols
 NS_SWIFT_NAME(identity(rows:cols:));
 
-- (double)valueAtRow:(ptrdiff_t)row col:(ptrdiff_t)col
+- (double)valueAtRow:(int_t)row col:(int_t)col
 NS_SWIFT_NAME(value(row:col:));
-- (void)setValue:(double)value row:(ptrdiff_t)row col:(ptrdiff_t)col
+- (void)setValue:(double)value row:(int_t)row col:(int_t)col
 NS_SWIFT_NAME(setValue(_:row:col:));
 
 - (bool)isZero;
@@ -28,7 +29,7 @@ NS_SWIFT_NAME(setValue(_:row:col:));
 
 - (double)determinant;
 - (double)trace;
-- (instancetype)submatrixFromRow:(ptrdiff_t)i col:(ptrdiff_t)j width:(ptrdiff_t)w height:(ptrdiff_t)h;
+- (instancetype)submatrixFromRow:(int_t)i col:(int_t)j width:(int_t)w height:(int_t)h;
 - (void)serializeInto:(double *)array;
 
 - (bool)equals:(id)other;

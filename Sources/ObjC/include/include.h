@@ -5,9 +5,10 @@
 //  Created by Taketo Sano on 2021/05/11.
 //
 
-#ifndef Header_h
-#define Header_h
+#ifndef Include_h
+#define Include_h
 
+#include "../basic.h"
 #include "../ObjCEigenDoubleMatrix.h"
 #include "../ObjCEigenIntMatrix.h"
 
