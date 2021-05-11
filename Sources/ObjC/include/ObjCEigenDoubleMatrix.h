@@ -28,16 +28,16 @@ NS_SWIFT_NAME(setValue(_:row:col:));
 
 - (double)determinant;
 - (double)trace;
-- (ObjCEigenDoubleMatrix *)submatrixFromRow:(ptrdiff_t)i col:(ptrdiff_t)j width:(ptrdiff_t)w height:(ptrdiff_t)h;
+- (instancetype)submatrixFromRow:(ptrdiff_t)i col:(ptrdiff_t)j width:(ptrdiff_t)w height:(ptrdiff_t)h;
 - (void)serializeInto:(double *)array;
 
-- (bool)equals:(ObjCEigenDoubleMatrix *)other;
-- (ObjCEigenDoubleMatrix *)add:(ObjCEigenDoubleMatrix *)other;
-- (ObjCEigenDoubleMatrix *)negate;
-- (ObjCEigenDoubleMatrix *)sub:(ObjCEigenDoubleMatrix *)other;
-- (ObjCEigenDoubleMatrix *)mulLeft:(double) r;
-- (ObjCEigenDoubleMatrix *)mulRight:(double) r;
-- (ObjCEigenDoubleMatrix *)mul:(ObjCEigenDoubleMatrix *) other;
+- (bool)equals:(id)other;
+- (instancetype)add:(id)other;
+- (instancetype)negate;
+- (instancetype)sub:(id)other;
+- (instancetype)mulLeft:(double) r;
+- (instancetype)mulRight:(double) r;
+- (instancetype)mul:(id) other;
 
 @end
 

@@ -7,7 +7,8 @@
 
 #import <iostream>
 
-using Matrix = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
+using Ring = double;
+using Matrix = Eigen::Matrix<Ring, Eigen::Dynamic, Eigen::Dynamic>;
 using Map = Eigen::Map<Matrix>;
 
 @interface ObjCEigenDoubleMatrix ()
@@ -47,11 +48,11 @@ using Map = Eigen::Map<Matrix>;
     return [[ObjCEigenDoubleMatrix alloc] initWithMatrix:Matrix::Identity(rows, cols)];
 }
 
-- (double)valueAtRow:(ptrdiff_t)row col:(ptrdiff_t)col {
+- (Ring)valueAtRow:(ptrdiff_t)row col:(ptrdiff_t)col {
     return _matrix(row, col);
 }
 
-- (void)setValue:(double)value row:(ptrdiff_t)row col:(ptrdiff_t)col {
+- (void)setValue:(Ring)value row:(ptrdiff_t)row col:(ptrdiff_t)col {
     _matrix(row, col) = value;
 }
 
@@ -63,11 +64,11 @@ using Map = Eigen::Map<Matrix>;
     return [[ObjCEigenDoubleMatrix alloc] initWithMatrix:_matrix.transpose()];
 }
 
-- (double)determinant {
+- (Ring)determinant {
     return _matrix.determinant();
 }
 
-- (double)trace {
+- (Ring)trace {
     return _matrix.trace();
 }
 
@@ -80,7 +81,7 @@ using Map = Eigen::Map<Matrix>;
     return [[ObjCEigenDoubleMatrix alloc] initWithMatrix:_matrix.block(i, j, w, h)];
 }
 
-- (void)serializeInto:(double *)array {
+- (void)serializeInto:(Ring *)array {
     Map(array, _matrix.rows(), _matrix.cols()) = _matrix.transpose();
 }
 
@@ -100,11 +101,11 @@ using Map = Eigen::Map<Matrix>;
     return [[ObjCEigenDoubleMatrix alloc]initWithMatrix:_matrix - other.matrix];
 }
 
-- (ObjCEigenDoubleMatrix *)mulLeft:(double)r {
+- (ObjCEigenDoubleMatrix *)mulLeft:(Ring)r {
     return [[ObjCEigenDoubleMatrix alloc]initWithMatrix:r * _matrix];
 }
 
-- (ObjCEigenDoubleMatrix *)mulRight:(double)r {
+- (ObjCEigenDoubleMatrix *)mulRight:(Ring)r {
     return [[ObjCEigenDoubleMatrix alloc]initWithMatrix:_matrix * r];
 }
 
