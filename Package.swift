@@ -10,7 +10,13 @@ let package = Package(
             targets: ["ObjCEigen", "SwiftyEigen"]
         )
     ],
-    dependencies: [],
+    dependencies: [
+	    .package(
+            name:"SwiftyMath",
+            url: "https://github.com/taketo1024/SwiftyMath.git",
+            from:"2.1.1"
+        )
+	],
     targets: [
         .target(
             name: "ObjCEigen",
@@ -22,8 +28,13 @@ let package = Package(
         ),
         .target(
             name: "SwiftyEigen",
-            dependencies: ["ObjCEigen"],
+            dependencies: ["ObjCEigen", "SwiftyMath"],
             path: "Sources/Swift"
+        ),
+        .target(
+            name: "SwiftyEigen-Sample",
+            dependencies: ["SwiftyEigen", "SwiftyMath"],
+            path: "Sources/Sample"
         )
     ]
 )
