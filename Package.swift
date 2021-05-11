@@ -22,7 +22,7 @@ let package = Package(
             name: "ObjCEigen",
             path: "Sources/ObjC",
             cxxSettings: [
-                .headerSearchPath("../CPP/"),
+                .headerSearchPath("../Eigen/"),
                 .define("EIGEN_MPL2_ONLY")
             ]
         ),
