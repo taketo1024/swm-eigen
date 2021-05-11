@@ -11,7 +11,7 @@ public struct EigenDoubleMatrix: EigenMatrixProtocol {
     public typealias ObjCType = ObjCEigenDoubleMatrix
     public typealias BaseRing = Double
     
-    public var objCMatrix: ObjCEigenDoubleMatrix
+    public var objCMatrix: ObjCType
     
     public init(_ objCMatrix: ObjCType) {
         self.objCMatrix = objCMatrix
