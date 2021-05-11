@@ -8,9 +8,9 @@
 #ifndef Basic_h
 #define Basic_h
 
-#include <stddef.h>
+typedef signed long int_t;
 
-typedef size_t int_t;
+inline int_t absInt(int_t x) { return x >= 0 ? x : -x; }
 
 typedef struct {
     int_t p;
