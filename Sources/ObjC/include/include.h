@@ -11,5 +11,6 @@
 #include "../basic.h"
 #include "../ObjCEigenDoubleMatrix.h"
 #include "../ObjCEigenIntMatrix.h"
+#include "../ObjCEigenRationalMatrix.h"
 
 #endif /* Header_h */
