@@ -35,6 +35,10 @@ let package = Package(
             name: "SwiftyEigen-Sample",
             dependencies: ["SwiftyEigen", "SwiftyMath"],
             path: "Sources/Sample"
-        )
+        ),
+        .testTarget(
+            name: "SwiftyEigenTests",
+            dependencies: ["SwiftyEigen", "SwiftyMath"]
+        ),
     ]
 )

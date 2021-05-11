@@ -10,7 +10,8 @@ import SwiftyMath
 public struct EigenDoubleMatrix: MatrixImpl {
     private typealias ObjCType = ObjCEigenDoubleMatrix
     public typealias BaseRing = Double
-    private let matrix: ObjCEigenDoubleMatrix
+    
+    private var matrix: ObjCEigenDoubleMatrix
     
     private init(_ matrix: ObjCType) {
         self.matrix = matrix
@@ -28,6 +29,12 @@ public struct EigenDoubleMatrix: MatrixImpl {
         self.init(matrix)
     }
     
+    private mutating func copyOnWrite() {
+        if !isKnownUniquelyReferenced(&matrix) {
+            self.matrix = matrix.copy()
+        }
+    }
+    
     public static func zero(size: (Int, Int)) -> Self {
         let matrix = ObjCType.zeros(rows: size.0, cols: size.1)
         return self.init(matrix)
@@ -42,7 +49,7 @@ public struct EigenDoubleMatrix: MatrixImpl {
         get {
             matrix.value(row: i, col: j)
         } set {
-            // TODO copy-on-write
+            copyOnWrite()
             matrix.setValue(newValue, row: i, col: j)
         }
     }
@@ -60,7 +67,7 @@ public struct EigenDoubleMatrix: MatrixImpl {
     }
 
     public var inverse: Self? {
-        .init(matrix.inverse())
+        isInvertible ? .init(matrix.inverse()) : nil
     }
 
     public var determinant: BaseRing {
@@ -83,7 +90,7 @@ public struct EigenDoubleMatrix: MatrixImpl {
     }
 
     public static func ==(a: Self, b: Self) -> Bool {
-        a.matrix == b.matrix
+        a.matrix.equals(b.matrix) 
     }
 
     public static func +(a: Self, b: Self) -> Self {
@@ -108,14 +115,6 @@ public struct EigenDoubleMatrix: MatrixImpl {
 
     public static func *(a: Self, b: Self) -> Self {
         .init(a.matrix.mul(b.matrix))
-    }
-
-    public var description: String {
-        matrix.description
-    }
-    
-    public var detailDescription: String {
-        matrix.description
     }
 }
 

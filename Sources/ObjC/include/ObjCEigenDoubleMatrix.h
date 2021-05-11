@@ -10,6 +10,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly) ptrdiff_t cols;
 
 - (instancetype)init NS_UNAVAILABLE;
+- (instancetype)copy;
+
 + (instancetype)matrixWithZeros:(ptrdiff_t)rows cols:(ptrdiff_t)cols
 NS_SWIFT_NAME(zeros(rows:cols:));
 + (instancetype)matrixWithIdentity:(ptrdiff_t)rows cols:(ptrdiff_t)cols

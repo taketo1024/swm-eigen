@@ -26,6 +26,11 @@ using Map = Eigen::Map<Matrix>;
     return self;
 }
 
+- (instancetype)copy {
+    Matrix copy = _matrix;
+    return [[ObjCEigenDoubleMatrix alloc] initWithMatrix:copy];
+}
+
 - (ptrdiff_t)rows {
     return _matrix.rows();
 }
