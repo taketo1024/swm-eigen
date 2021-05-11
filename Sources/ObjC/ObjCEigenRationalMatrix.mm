@@ -119,10 +119,6 @@ using Map = Eigen::Map<Matrix>;
     return [[ObjCEigenRationalMatrix alloc]initWithMatrix:_matrix * other.matrix];
 }
 
-+ (void)hehe {
-    cout << int_t(0) - int_t(1) << endl;
-}
-
 - (NSString*)description {
     std::stringstream buffer;
     buffer << _matrix;

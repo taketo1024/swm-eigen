@@ -40,8 +40,6 @@ NS_SWIFT_NAME(setValue(_:row:col:));
 - (instancetype)mulRight:(rational_t) r;
 - (instancetype)mul:(id) other;
 
-+ (void)hehe;
-
 @end
 
 NS_ASSUME_NONNULL_END
