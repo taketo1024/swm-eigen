@@ -8,16 +8,16 @@
 import SwiftyMath
 
 public struct EigenIntMatrix: EigenMatrixProtocol {
-    public typealias ObjCType = ObjCEigenIntMatrix
+    public typealias ObjCMatrix = ObjCEigenIntMatrix
     public typealias BaseRing = Int
     
-    public var objCMatrix: ObjCType
+    public var objCMatrix: ObjCMatrix
     
-    public init(_ objCMatrix: ObjCType) {
+    public init(_ objCMatrix: ObjCMatrix) {
         self.objCMatrix = objCMatrix
     }
 }
 
 extension ObjCEigenIntMatrix: ObjCEigenMatrixProtocol {
-    public typealias BaseRing = Int
+    public typealias Coeff = Int
 }

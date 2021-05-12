@@ -8,7 +8,7 @@
 import SwiftyMath
 
 public protocol ObjCEigenMatrixProtocol {
-    associatedtype BaseRing
+    associatedtype Coeff
     
     static func zeros(rows: Int, cols: Int) -> Self
     static func identity(rows: Int, cols: Int) -> Self
@@ -18,24 +18,31 @@ public protocol ObjCEigenMatrixProtocol {
     var rows: Int { get }
     var cols: Int { get }
 
-    func value(row: Int, col: Int) -> BaseRing
-    func setValue(_ value: BaseRing, row: Int, col: Int)
+    func value(row: Int, col: Int) -> Coeff
+    func setValue(_ value: Coeff, row: Int, col: Int)
     
     func isZero() -> Bool
     func transposed() -> Self
     func inverse() -> Self
 
-    func determinant() -> BaseRing
-    func trace() -> BaseRing
+    func determinant() -> Coeff
+    func trace() -> Coeff
     
     func submatrix(fromRow i: Int, col j: Int, width w: Int, height h: Int) -> Self
-    func serialize(into array: UnsafeMutablePointer<BaseRing>)
+    func serialize(into array: UnsafeMutablePointer<Coeff>)
     
     func equals(_ other: Any) -> Bool
     func add(_ other: Any) -> Self
     func negate() -> Self
     func sub(_ other: Any) -> Self
-    func mulLeft(_ r: BaseRing) -> Self
-    func mulRight(_ r: BaseRing) -> Self
+    func mulLeft(_ r: Coeff) -> Self
+    func mulRight(_ r: Coeff) -> Self
     func mul(_ other: Any) -> Self
+}
+
+public protocol CTypeConvertible {
+    associatedtype CType
+    
+    init(fromCType r: CType)
+    var toCType: CType { get }
 }

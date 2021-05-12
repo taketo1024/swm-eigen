@@ -8,16 +8,16 @@
 import SwiftyMath
 
 public struct EigenDoubleMatrix: EigenMatrixProtocol {
-    public typealias ObjCType = ObjCEigenDoubleMatrix
+    public typealias ObjCMatrix = ObjCEigenDoubleMatrix
     public typealias BaseRing = Double
     
-    public var objCMatrix: ObjCType
+    public var objCMatrix: ObjCMatrix
     
-    public init(_ objCMatrix: ObjCType) {
+    public init(_ objCMatrix: ObjCMatrix) {
         self.objCMatrix = objCMatrix
     }
 }
 
 extension ObjCEigenDoubleMatrix: ObjCEigenMatrixProtocol {
-    public typealias BaseRing = Double
+    public typealias Coeff = Double
 }
