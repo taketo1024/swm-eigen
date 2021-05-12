@@ -13,4 +13,6 @@
 #include "../ObjCEigenIntMatrix.h"
 #include "../ObjCEigenRationalMatrix.h"
 
+#include "../ObjCEigenRationalSparseMatrix.h"
+
 #endif /* Header_h */

@@ -17,4 +17,10 @@ typedef struct {
     int_t q;
 } rational_t;
 
+typedef struct {
+    int_t row;
+    int_t col;
+    rational_t value;
+} rational_triplet_t;
+
 #endif /* Header_h */
