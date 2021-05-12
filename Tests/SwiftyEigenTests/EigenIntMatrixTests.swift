@@ -129,16 +129,16 @@ class EigenIntMatrixTests: XCTestCase {
         XCTAssertEqual(e * a, a)
     }
     
-//    func testInv() {
-//        let a: M2 = [1,2,2,3]
-//        XCTAssertEqual(a.inverse!, [-3,2,2,-1])
-//    }
+    func testInv() {
+        let a: M2 = [1,2,2,3]
+        XCTAssertEqual(a.inverse!, [-3,2,2,-1])
+    }
 
-//    func testNonInvertible() {
-//        let b: M2 = [1, 0, 0, 0]
-//        XCTAssertFalse(b.isInvertible)
-//        XCTAssertNil(b.inverse)
-//    }
+    func testNonInvertible() {
+        let b: M2 = [1, 0, 0, 0]
+        XCTAssertFalse(b.isInvertible)
+        XCTAssertNil(b.inverse)
+    }
     
     func testPow() {
         let a: M2 = [1,2,3,4]
@@ -153,19 +153,19 @@ class EigenIntMatrixTests: XCTestCase {
         XCTAssertEqual(a.trace, 5)
     }
     
-//    func testDet() {
-//        let a: M2 = [1,2,3,4]
-//        XCTAssertEqual(a.determinant, -2)
-//    }
+    func testDet() {
+        let a: M2 = [1,2,3,4]
+        XCTAssertEqual(a.determinant, -2)
+    }
 
-//    func testDet4() {
-//        let a: Matrix4 =
-//            [3,-1,2,4,
-//             2,1,1,3,
-//             -2,0,3,-1,
-//             0,-2,1,3]
-//        XCTAssertEqual(a.determinant, 66)
-//    }
+    func testDet4() {
+        let a: Matrix4 =
+            [3,-1,2,4,
+             2,1,1,3,
+             -2,0,3,-1,
+             0,-2,1,3]
+        XCTAssertEqual(a.determinant, 66)
+    }
     
     func testTransposed() {
         let a: M2 = [1,2,3,4]

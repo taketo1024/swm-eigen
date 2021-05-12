@@ -7,9 +7,10 @@
 #pragma clang diagnostic pop
 
 #import <iostream>
+#import "Rational/Rational.hpp"
 
-using Ring = int_t;
-using Matrix = Eigen::Matrix<Ring, Eigen::Dynamic, Eigen::Dynamic>;
+using Coeff = int_t;
+using Matrix = Eigen::Matrix<Coeff, Eigen::Dynamic, Eigen::Dynamic>;
 using Map = Eigen::Map<Matrix>;
 
 @interface ObjCEigenIntMatrix ()
@@ -49,11 +50,11 @@ using Map = Eigen::Map<Matrix>;
     return [[ObjCEigenIntMatrix alloc] initWithMatrix:Matrix::Identity(rows, cols)];
 }
 
-- (Ring)valueAtRow:(int_t)row col:(int_t)col {
+- (Coeff)valueAtRow:(int_t)row col:(int_t)col {
     return _matrix(row, col);
 }
 
-- (void)setValue:(Ring)value row:(int_t)row col:(int_t)col {
+- (void)setValue:(Coeff)value row:(int_t)row col:(int_t)col {
     _matrix(row, col) = value;
 }
 
@@ -65,24 +66,25 @@ using Map = Eigen::Map<Matrix>;
     return [[ObjCEigenIntMatrix alloc] initWithMatrix:_matrix.transpose()];
 }
 
-- (Ring)determinant {
-    NSAssert(false, @"unavailable");
+- (Coeff)determinant {
+    auto det = _matrix.cast<RationalNum>().determinant();
+    if (det.getDenominator() != 1) {
+        @throw [NSException exceptionWithName:@"Runtime Exception" reason:@"invalid calculation result." userInfo:nil];
+    }
+    return det.getNumerator();
 }
 
-- (Ring)trace {
+- (Coeff)trace {
     return _matrix.trace();
 }
 
 - (instancetype)inverse {
-    NSAssert(false, @"unavailable");
+    auto rinv = _matrix.cast<RationalNum>().inverse();
+    return [[ObjCEigenIntMatrix alloc] initWithMatrix:rinv.cast<int_t>()];
 }
 
 -(instancetype)submatrixFromRow:(int_t)i col:(int_t)j width:(int_t)w height:(int_t)h {
     return [[ObjCEigenIntMatrix alloc] initWithMatrix:_matrix.block(i, j, w, h)];
-}
-
-- (void)serializeInto:(Ring *)array {
-    Map(array, _matrix.rows(), _matrix.cols()) = _matrix.transpose();
 }
 
 - (bool)equals:(ObjCEigenIntMatrix *)other {
@@ -101,11 +103,11 @@ using Map = Eigen::Map<Matrix>;
     return [[ObjCEigenIntMatrix alloc]initWithMatrix:_matrix - other.matrix];
 }
 
-- (ObjCEigenIntMatrix *)mulLeft:(Ring)r {
+- (ObjCEigenIntMatrix *)mulLeft:(Coeff)r {
     return [[ObjCEigenIntMatrix alloc]initWithMatrix:r * _matrix];
 }
 
-- (ObjCEigenIntMatrix *)mulRight:(Ring)r {
+- (ObjCEigenIntMatrix *)mulRight:(Coeff)r {
     return [[ObjCEigenIntMatrix alloc]initWithMatrix:_matrix * r];
 }
 
@@ -113,11 +115,8 @@ using Map = Eigen::Map<Matrix>;
     return [[ObjCEigenIntMatrix alloc]initWithMatrix:_matrix * other.matrix];
 }
 
-- (NSString*)description {
-    std::stringstream buffer;
-    buffer << _matrix;
-    const std::string string = buffer.str();
-    return [NSString stringWithUTF8String:string.c_str()];
+- (void)serializeInto:(Coeff *)array {
+    Map(array, _matrix.rows(), _matrix.cols()) = _matrix.transpose();
 }
 
 @end

@@ -45,6 +45,8 @@ public:
     RationalNum operator+() const;
     RationalNum operator-() const;
     
+    explicit operator int_t() const;
+    
     int_t getNumerator() const;
     int_t getDenominator() const;
     

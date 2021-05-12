@@ -148,6 +148,8 @@ RationalNum RationalNum::operator-() const {
     return RationalNum(-numerator, denominator);
 }
 
+RationalNum::operator int_t() const { return numerator / denominator; }
+
 int_t RationalNum::getNumerator() const {
     return numerator;
 }
