@@ -115,9 +115,9 @@ extension EigenMatrixProtocol where BaseRing == ObjCMatrix.Coeff {
     
     public func serialize() -> [BaseRing] {
         let l = size.rows * size.cols
-        let p = UnsafeMutablePointer<BaseRing>.allocate(capacity: l)
-        objCMatrix.serialize(into: p)
-        return Array(UnsafeBufferPointer(start: p, count: l))
+        var array = [BaseRing](repeating: .zero, count: l)
+        objCMatrix.serialize(into: &array)
+        return array
     }
 }
 
@@ -161,9 +161,8 @@ extension EigenMatrixProtocol where BaseRing: CTypeConvertible, BaseRing.CType =
     
     public func serialize() -> [BaseRing] {
         let l = size.rows * size.cols
-        let p = UnsafeMutablePointer<BaseRing.CType>.allocate(capacity: l)
-        objCMatrix.serialize(into: p)
-        let buff = UnsafeBufferPointer(start: p, count: l)
-        return buff.map{ BaseRing(fromCType: $0) }
+        var array = [BaseRing.CType](repeating: BaseRing.zero.toCType, count: l)
+        objCMatrix.serialize(into: &array)
+        return array.map{ BaseRing(fromCType: $0) }
     }
 }

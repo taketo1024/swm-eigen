@@ -2,7 +2,8 @@
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdocumentation"
-#import <Eigen/Dense>
+#import <Eigen/Core>
+#import <Eigen/LU>
 #pragma clang diagnostic pop
 
 #import <iostream>
