@@ -9,8 +9,8 @@
 #import <iostream>
 #import "Rational/Rational.hpp"
 
-using Ring = RationalNum;
-using Matrix = Eigen::Matrix<Ring, Eigen::Dynamic, Eigen::Dynamic>;
+using Coeff = RationalNum;
+using Matrix = Eigen::Matrix<Coeff, Eigen::Dynamic, Eigen::Dynamic>;
 using Map = Eigen::Map<Matrix>;
 
 @interface ObjCEigenRationalMatrix ()
@@ -84,14 +84,6 @@ using Map = Eigen::Map<Matrix>;
     return [[ObjCEigenRationalMatrix alloc] initWithMatrix:_matrix.block(i, j, w, h)];
 }
 
-- (void)serializeInto:(rational_t *)array {
-    for(int_t i = 0; i < self.rows; i++) {
-        for(int_t j = 0; j < self.cols; j++) {
-            *(array++) = [self valueAtRow:i col:j];
-        }
-    }
-}
-
 - (bool)equals:(ObjCEigenRationalMatrix *)other {
     return _matrix == other.matrix;
 }
@@ -120,11 +112,11 @@ using Map = Eigen::Map<Matrix>;
     return [[ObjCEigenRationalMatrix alloc]initWithMatrix:_matrix * other.matrix];
 }
 
-- (NSString*)description {
-    std::stringstream buffer;
-    buffer << _matrix;
-    const std::string string = buffer.str();
-    return [NSString stringWithUTF8String:string.c_str()];
+- (void)serializeInto:(rational_t *)array {
+    for(int_t i = 0; i < self.rows; i++) {
+        for(int_t j = 0; j < self.cols; j++) {
+            *(array++) = [self valueAtRow:i col:j];
+        }
+    }
 }
-
 @end

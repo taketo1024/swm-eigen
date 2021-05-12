@@ -128,16 +128,6 @@ using Map = Eigen::Map<Matrix>;
     return [[ObjCEigenRationalSparseMatrix alloc]initWithMatrix:_matrix * other.matrix];
 }
 
-- (void)serializeInto:(rational_t *)array {
-    int_t m = self.cols;
-    for (int k = 0; k < _matrix.outerSize(); ++k) {
-        for (Matrix::InnerIterator it(_matrix, k); it; ++it) {
-            int idx = it.row() * m + it.col();
-            array[idx] = to_rational_t(it.value());
-        }
-    }
-}
-
 - (int_t)countNonZeros {
     return _matrix.nonZeros();
 }
@@ -147,6 +137,16 @@ using Map = Eigen::Map<Matrix>;
         for (Matrix::InnerIterator it(_matrix, k); it; ++it) {
             rational_triplet_t t = {it.row(), it.col(), to_rational_t(it.value())};
             *(array++) = t;
+        }
+    }
+}
+
+- (void)serializeInto:(rational_t *)array {
+    int_t m = self.cols;
+    for (int k = 0; k < _matrix.outerSize(); ++k) {
+        for (Matrix::InnerIterator it(_matrix, k); it; ++it) {
+            int idx = it.row() * m + it.col();
+            array[idx] = to_rational_t(it.value());
         }
     }
 }
