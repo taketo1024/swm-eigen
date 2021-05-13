@@ -7,7 +7,7 @@
 
 import SwiftyMath
 
-public struct EigenRationalMatrix: EigenMatrixProtocol {
+public struct EigenRationalMatrix: EigenMatrix_LU {
     public typealias ObjCMatrix = ObjCEigenRationalMatrix
     public typealias BaseRing = RationalNumber
 
@@ -18,7 +18,7 @@ public struct EigenRationalMatrix: EigenMatrixProtocol {
     }
 }
 
-extension ObjCEigenRationalMatrix: ObjCEigenMatrixProtocol {
+extension ObjCEigenRationalMatrix: ObjCEigenMatrix_LU {
     public typealias Coeff = RationalNumber.CType
 }
 

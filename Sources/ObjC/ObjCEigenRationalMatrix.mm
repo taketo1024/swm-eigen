@@ -13,8 +13,12 @@ using Self = ObjCEigenRationalMatrix;
 using Coeff = RationalNum;
 using Matrix = Eigen::Matrix<Coeff, Eigen::Dynamic, Eigen::Dynamic>;
 using Map = Eigen::Map<Matrix>;
+using LU = Eigen::FullPivLU<Matrix>;
 
-@interface ObjCEigenRationalMatrix ()
+@interface ObjCEigenRationalMatrix () {
+    LU _solver;
+    bool _solver_initialized;
+}
 
 @property (readonly) Matrix matrix;
 
@@ -120,4 +124,69 @@ using Map = Eigen::Map<Matrix>;
         }
     }
 }
+
+@end
+
+@implementation ObjCEigenRationalMatrix(LU)
+
+- (LU)solver {
+    if (!_solver_initialized) {
+        _solver = LU(_matrix);
+        _solver_initialized = true;
+    }
+    return _solver;
+}
+
+- (Self *)getL {
+    auto solver = [self solver];
+    auto lu = solver.matrixLU();
+    auto l = lu.triangularView<Eigen::Lower>();
+    for(int_t i = 0; i < self.cols; i++) {
+        l(i, i) = 1;
+    }
+    return [[Self alloc] initWithMatrix:l];
+}
+
+- (Self *)getU {
+    auto solver = [self solver];
+    auto lu = solver.matrixLU();
+    return [[Self alloc] initWithMatrix:lu.triangularView<Eigen::Upper>()];
+}
+
+- (Self *)getP {
+    auto solver = [self solver];
+    auto P = solver.permutationP();
+    return [[Self alloc] initWithMatrix:solver.permutationP()];
+}
+
+- (Self *)getQ {
+    auto solver = [self solver];
+    return [[Self alloc] initWithMatrix:solver.permutationQ()];
+}
+
+- (int_t)rank {
+    return [self solver].rank();
+}
+
+- (int_t)nullity {
+    return [self solver].dimensionOfKernel();
+}
+
+- (Self *)image {
+    auto solver = [self solver];
+    return [[Self alloc] initWithMatrix:solver.image(_matrix)];
+}
+
+- (Self *)kernel {
+    auto solver = [self solver];
+    return [[Self alloc] initWithMatrix:solver.kernel()];
+}
+
+- (Self *)solve: (Self *)b_ {
+    auto solver = [self solver];
+    auto b = b_.matrix;
+    auto x = solver.solve(b);
+    return [[Self alloc] initWithMatrix:x];
+}
+
 @end

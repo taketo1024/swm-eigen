@@ -7,8 +7,8 @@
 
 import SwiftyMath
 
-public protocol EigenMatrixProtocol: MatrixImpl {
-    associatedtype ObjCMatrix: AnyObject, ObjCEigenMatrixProtocol
+public protocol EigenMatrix: MatrixImpl {
+    associatedtype ObjCMatrix: ObjCEigenMatrix
     
     init(_ objCMatrix: ObjCMatrix)
     
@@ -17,7 +17,7 @@ public protocol EigenMatrixProtocol: MatrixImpl {
     var objCMatrix: ObjCMatrix { get set } // rename to objCMatrix
 }
 
-extension EigenMatrixProtocol {
+extension EigenMatrix {
     public mutating func copyOnWrite() {
         if !isKnownUniquelyReferenced(&objCMatrix) {
             self.objCMatrix = objCMatrix.copy()
@@ -75,7 +75,7 @@ extension EigenMatrixProtocol {
     }
 }
 
-extension EigenMatrixProtocol where BaseRing == ObjCMatrix.Coeff {
+extension EigenMatrix where BaseRing == ObjCMatrix.Coeff {
     public init(size: (Int, Int), initializer: (Initializer) -> Void) {
         let objCMatrix = ObjCMatrix.zeros(rows: size.0, cols: size.1)
         initializer { (i, j, a) in
@@ -121,7 +121,7 @@ extension EigenMatrixProtocol where BaseRing == ObjCMatrix.Coeff {
     }
 }
 
-extension EigenMatrixProtocol where BaseRing: CTypeConvertible, BaseRing.CType == ObjCMatrix.Coeff {
+extension EigenMatrix where BaseRing: CTypeConvertible, BaseRing.CType == ObjCMatrix.Coeff {
     public init(size: (Int, Int), initializer: (Initializer) -> Void) {
         let objCMatrix = ObjCMatrix.zeros(rows: size.0, cols: size.1)
         initializer { (i, j, a) in

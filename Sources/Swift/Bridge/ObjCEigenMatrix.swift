@@ -7,7 +7,7 @@
 
 import SwiftyMath
 
-public protocol ObjCEigenMatrixProtocol {
+public protocol ObjCEigenMatrix: AnyObject {
     associatedtype Coeff
     
     static func zeros(rows: Int, cols: Int) -> Self
@@ -40,9 +40,15 @@ public protocol ObjCEigenMatrixProtocol {
     func mul(_ other: Any) -> Self
 }
 
-public protocol CTypeConvertible {
-    associatedtype CType
-    
-    init(fromCType r: CType)
-    var toCType: CType { get }
+public protocol ObjCEigenMatrix_LU: ObjCEigenMatrix {
+    func getL() -> Self
+    func getU() -> Self
+    func getP() -> Self
+    func getQ() -> Self
+    func rank() -> Int
+    func nullity() -> Int
+    func kernel() -> Self
+    func image() -> Self
+    func solve(_ b: Any) -> Self?
 }
+

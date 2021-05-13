@@ -30,7 +30,6 @@ NS_SWIFT_NAME(setValue(_:row:col:));
 - (rational_t)determinant;
 - (rational_t)trace;
 - (instancetype)submatrixFromRow:(int_t)i col:(int_t)j width:(int_t)w height:(int_t)h;
-- (void)serializeInto:(rational_t *)array;
 
 - (bool)equals:(id)other;
 - (instancetype)add:(id)other;
@@ -39,6 +38,22 @@ NS_SWIFT_NAME(setValue(_:row:col:));
 - (instancetype)mulLeft:(rational_t) r;
 - (instancetype)mulRight:(rational_t) r;
 - (instancetype)mul:(id) other;
+
+- (void)serializeInto:(rational_t *)array;
+
+@end
+
+@interface ObjCEigenRationalMatrix(LU)
+
+- (instancetype)getP;
+- (instancetype)getL;
+- (instancetype)getU;
+- (instancetype)getQ;
+- (int_t)rank;
+- (int_t)nullity;
+- (instancetype)image;
+- (instancetype)kernel;
+- (nullable instancetype)solve: (id)b;
 
 @end
 

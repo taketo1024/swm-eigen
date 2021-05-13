@@ -7,7 +7,7 @@
 
 import SwiftyMath
 
-public struct EigenIntMatrix: EigenMatrixProtocol {
+public struct EigenIntMatrix: EigenMatrix {
     public typealias ObjCMatrix = ObjCEigenIntMatrix
     public typealias BaseRing = Int
     
@@ -18,6 +18,6 @@ public struct EigenIntMatrix: EigenMatrixProtocol {
     }
 }
 
-extension ObjCEigenIntMatrix: ObjCEigenMatrixProtocol {
+extension ObjCEigenIntMatrix: ObjCEigenMatrix {
     public typealias Coeff = Int
 }

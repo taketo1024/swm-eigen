@@ -7,7 +7,7 @@
 
 import SwiftyMath
 
-public struct EigenDoubleMatrix: EigenMatrixProtocol {
+public struct EigenDoubleMatrix: EigenMatrix {
     public typealias ObjCMatrix = ObjCEigenDoubleMatrix
     public typealias BaseRing = Double
     
@@ -18,6 +18,6 @@ public struct EigenDoubleMatrix: EigenMatrixProtocol {
     }
 }
 
-extension ObjCEigenDoubleMatrix: ObjCEigenMatrixProtocol {
+extension ObjCEigenDoubleMatrix: ObjCEigenMatrix {
     public typealias Coeff = Double
 }
