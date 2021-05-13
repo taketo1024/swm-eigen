@@ -4,6 +4,7 @@
 #pragma clang diagnostic ignored "-Wdocumentation"
 #import <Eigen/Core>
 #import <Eigen/Sparse>
+#import <Eigen/SparseLU>
 #pragma clang diagnostic pop
 
 #import <iostream>
@@ -14,6 +15,7 @@ using Coeff = RationalNum;
 using Matrix = Eigen::SparseMatrix<Coeff>;
 using Triplet = Eigen::Triplet<Coeff>;
 using Map = Eigen::Map<Matrix>;
+using SparseLU = Eigen::SparseLU<Matrix, Eigen::COLAMDOrdering<int> >;
 
 @interface ObjCEigenRationalSparseMatrix ()
 
@@ -150,6 +152,17 @@ using Map = Eigen::Map<Matrix>;
             array[idx] = to_rational_t(it.value());
         }
     }
+}
+
+- (Self *)solve: (Self *)b_ {
+    SparseLU solver;
+    
+    solver.analyzePattern(_matrix);
+    solver.factorize(_matrix);
+    
+    auto b = b_.matrix;
+    auto x = solver.solve(b);
+    return [[Self alloc] initWithMatrix:x];
 }
 
 @end

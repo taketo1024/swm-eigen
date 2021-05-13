@@ -45,6 +45,8 @@ NS_SWIFT_NAME(setValue(_:row:col:));
 - (int_t)countNonZeros;
 - (void)copyNonZerosInto:(rational_triplet_t *)array;
 
+- (nullable instancetype)solve: (id)b;
+
 @end
 
 NS_ASSUME_NONNULL_END

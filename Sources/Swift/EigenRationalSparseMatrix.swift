@@ -42,8 +42,18 @@ public struct EigenRationalSparseMatrix: EigenMatrixProtocol {
         objCMatrix.copyNonZeros(into: p.baseAddress!)
         return p.map{ t in  MatrixComponent(t.row, t.col, BaseRing(fromCType: t.value) ) }
     }
+    
+    public func solve(_ b: Self) -> Self? {
+        objCMatrix.solve(b.objCMatrix).flatMap{ .init($0) }
+    }
 }
 
 extension ObjCEigenRationalSparseMatrix: ObjCEigenMatrixProtocol {
     public typealias Coeff = RationalNumber.CType
+}
+
+extension MatrixInterface where Impl == EigenRationalSparseMatrix {
+    public func solve(_ b: MatrixInterface<Impl, m, _1, BaseRing>) -> MatrixInterface<Impl, n, _1, BaseRing>? {
+        impl.solve(b.impl).flatMap{ .init(impl: $0) }
+    }
 }
