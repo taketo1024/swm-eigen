@@ -9,6 +9,7 @@
 #import <iostream>
 #import "Rational/Rational.hpp"
 
+using Self = ObjCEigenIntMatrix;
 using Coeff = int_t;
 using Matrix = Eigen::Matrix<Coeff, Eigen::Dynamic, Eigen::Dynamic>;
 using Map = Eigen::Map<Matrix>;
@@ -31,7 +32,7 @@ using Map = Eigen::Map<Matrix>;
 
 - (instancetype)copy {
     Matrix copy = _matrix;
-    return [[ObjCEigenIntMatrix alloc] initWithMatrix:copy];
+    return [[Self alloc] initWithMatrix:copy];
 }
 
 - (int_t)rows {
@@ -43,11 +44,11 @@ using Map = Eigen::Map<Matrix>;
 }
 
 + (instancetype)matrixWithZeros:(int_t)rows cols:(int_t)cols {
-    return [[ObjCEigenIntMatrix alloc] initWithMatrix:Matrix::Zero(rows, cols)];
+    return [[Self alloc] initWithMatrix:Matrix::Zero(rows, cols)];
 }
 
 + (instancetype)matrixWithIdentity:(int_t)rows cols:(int_t)cols {
-    return [[ObjCEigenIntMatrix alloc] initWithMatrix:Matrix::Identity(rows, cols)];
+    return [[Self alloc] initWithMatrix:Matrix::Identity(rows, cols)];
 }
 
 - (Coeff)valueAtRow:(int_t)row col:(int_t)col {
@@ -63,7 +64,7 @@ using Map = Eigen::Map<Matrix>;
 }
 
 - (instancetype)transposed {
-    return [[ObjCEigenIntMatrix alloc] initWithMatrix:_matrix.transpose()];
+    return [[Self alloc] initWithMatrix:_matrix.transpose()];
 }
 
 - (Coeff)determinant {
@@ -80,39 +81,39 @@ using Map = Eigen::Map<Matrix>;
 
 - (instancetype)inverse {
     auto rinv = _matrix.cast<RationalNum>().inverse();
-    return [[ObjCEigenIntMatrix alloc] initWithMatrix:rinv.cast<int_t>()];
+    return [[Self alloc] initWithMatrix:rinv.cast<int_t>()];
 }
 
 -(instancetype)submatrixFromRow:(int_t)i col:(int_t)j width:(int_t)w height:(int_t)h {
-    return [[ObjCEigenIntMatrix alloc] initWithMatrix:_matrix.block(i, j, w, h)];
+    return [[Self alloc] initWithMatrix:_matrix.block(i, j, w, h)];
 }
 
-- (bool)equals:(ObjCEigenIntMatrix *)other {
+- (bool)equals:(Self *)other {
     return _matrix == other.matrix;
 }
 
-- (ObjCEigenIntMatrix *)add:(ObjCEigenIntMatrix *)other {
-    return [[ObjCEigenIntMatrix alloc]initWithMatrix:_matrix + other.matrix];
+- (Self *)add:(Self *)other {
+    return [[Self alloc]initWithMatrix:_matrix + other.matrix];
 }
 
-- (ObjCEigenIntMatrix *)negate {
-    return [[ObjCEigenIntMatrix alloc]initWithMatrix:-_matrix];
+- (Self *)negate {
+    return [[Self alloc]initWithMatrix:-_matrix];
 }
 
-- (ObjCEigenIntMatrix *)sub:(ObjCEigenIntMatrix *)other {
-    return [[ObjCEigenIntMatrix alloc]initWithMatrix:_matrix - other.matrix];
+- (Self *)sub:(Self *)other {
+    return [[Self alloc]initWithMatrix:_matrix - other.matrix];
 }
 
-- (ObjCEigenIntMatrix *)mulLeft:(Coeff)r {
-    return [[ObjCEigenIntMatrix alloc]initWithMatrix:r * _matrix];
+- (Self *)mulLeft:(Coeff)r {
+    return [[Self alloc]initWithMatrix:r * _matrix];
 }
 
-- (ObjCEigenIntMatrix *)mulRight:(Coeff)r {
-    return [[ObjCEigenIntMatrix alloc]initWithMatrix:_matrix * r];
+- (Self *)mulRight:(Coeff)r {
+    return [[Self alloc]initWithMatrix:_matrix * r];
 }
 
-- (ObjCEigenIntMatrix *)mul:(ObjCEigenIntMatrix *)other {
-    return [[ObjCEigenIntMatrix alloc]initWithMatrix:_matrix * other.matrix];
+- (Self *)mul:(Self *)other {
+    return [[Self alloc]initWithMatrix:_matrix * other.matrix];
 }
 
 - (void)serializeInto:(Coeff *)array {

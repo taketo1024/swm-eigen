@@ -8,6 +8,7 @@
 
 #import <iostream>
 
+using Self = ObjCEigenDoubleMatrix;
 using Coeff = double;
 using Matrix = Eigen::Matrix<Coeff, Eigen::Dynamic, Eigen::Dynamic>;
 using Map = Eigen::Map<Matrix>;
@@ -30,7 +31,7 @@ using Map = Eigen::Map<Matrix>;
 
 - (instancetype)copy {
     Matrix copy = _matrix;
-    return [[ObjCEigenDoubleMatrix alloc] initWithMatrix:copy];
+    return [[Self alloc] initWithMatrix:copy];
 }
 
 - (int_t)rows {
@@ -42,11 +43,11 @@ using Map = Eigen::Map<Matrix>;
 }
 
 + (instancetype)matrixWithZeros:(int_t)rows cols:(int_t)cols {
-    return [[ObjCEigenDoubleMatrix alloc] initWithMatrix:Matrix::Zero(rows, cols)];
+    return [[Self alloc] initWithMatrix:Matrix::Zero(rows, cols)];
 }
 
 + (instancetype)matrixWithIdentity:(int_t)rows cols:(int_t)cols {
-    return [[ObjCEigenDoubleMatrix alloc] initWithMatrix:Matrix::Identity(rows, cols)];
+    return [[Self alloc] initWithMatrix:Matrix::Identity(rows, cols)];
 }
 
 - (Coeff)valueAtRow:(int_t)row col:(int_t)col {
@@ -62,7 +63,7 @@ using Map = Eigen::Map<Matrix>;
 }
 
 - (instancetype)transposed {
-    return [[ObjCEigenDoubleMatrix alloc] initWithMatrix:_matrix.transpose()];
+    return [[Self alloc] initWithMatrix:_matrix.transpose()];
 }
 
 - (Coeff)determinant {
@@ -74,39 +75,39 @@ using Map = Eigen::Map<Matrix>;
 }
 
 - (instancetype)inverse {
-    return [[ObjCEigenDoubleMatrix alloc] initWithMatrix:_matrix.inverse()];
+    return [[Self alloc] initWithMatrix:_matrix.inverse()];
 }
 
 -(instancetype)submatrixFromRow:(int_t)i col:(int_t)j width:(int_t)w height:(int_t)h {
-    return [[ObjCEigenDoubleMatrix alloc] initWithMatrix:_matrix.block(i, j, w, h)];
+    return [[Self alloc] initWithMatrix:_matrix.block(i, j, w, h)];
 }
 
-- (bool)equals:(ObjCEigenDoubleMatrix *)other {
+- (bool)equals:(Self *)other {
     return _matrix == other.matrix;
 }
 
-- (ObjCEigenDoubleMatrix *)add:(ObjCEigenDoubleMatrix *)other {
-    return [[ObjCEigenDoubleMatrix alloc]initWithMatrix:_matrix + other.matrix];
+- (Self *)add:(Self *)other {
+    return [[Self alloc]initWithMatrix:_matrix + other.matrix];
 }
 
-- (ObjCEigenDoubleMatrix *)negate {
-    return [[ObjCEigenDoubleMatrix alloc]initWithMatrix:-_matrix];
+- (Self *)negate {
+    return [[Self alloc]initWithMatrix:-_matrix];
 }
 
-- (ObjCEigenDoubleMatrix *)sub:(ObjCEigenDoubleMatrix *)other {
-    return [[ObjCEigenDoubleMatrix alloc]initWithMatrix:_matrix - other.matrix];
+- (Self *)sub:(Self *)other {
+    return [[Self alloc]initWithMatrix:_matrix - other.matrix];
 }
 
-- (ObjCEigenDoubleMatrix *)mulLeft:(Coeff)r {
-    return [[ObjCEigenDoubleMatrix alloc]initWithMatrix:r * _matrix];
+- (Self *)mulLeft:(Coeff)r {
+    return [[Self alloc]initWithMatrix:r * _matrix];
 }
 
-- (ObjCEigenDoubleMatrix *)mulRight:(Coeff)r {
-    return [[ObjCEigenDoubleMatrix alloc]initWithMatrix:_matrix * r];
+- (Self *)mulRight:(Coeff)r {
+    return [[Self alloc]initWithMatrix:_matrix * r];
 }
 
-- (ObjCEigenDoubleMatrix *)mul:(ObjCEigenDoubleMatrix *)other {
-    return [[ObjCEigenDoubleMatrix alloc]initWithMatrix:_matrix * other.matrix];
+- (Self *)mul:(Self *)other {
+    return [[Self alloc]initWithMatrix:_matrix * other.matrix];
 }
 
 - (void)serializeInto:(Coeff *)array {

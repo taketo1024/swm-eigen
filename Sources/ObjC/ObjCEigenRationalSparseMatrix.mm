@@ -9,6 +9,7 @@
 #import <iostream>
 #import "Rational/Rational.hpp"
 
+using Self = ObjCEigenRationalSparseMatrix;
 using Coeff = RationalNum;
 using Matrix = Eigen::SparseMatrix<Coeff>;
 using Triplet = Eigen::Triplet<Coeff>;
