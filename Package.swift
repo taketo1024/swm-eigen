@@ -13,8 +13,8 @@ let package = Package(
     dependencies: [
 	    .package(
             name:"SwiftyMath",
-            url: "https://github.com/taketo1024/SwiftyMath.git",
-            from:"2.1.1"
+            url: "../SwiftyMath/",
+			.branch("matrix-improve")
         )
 	],
     targets: [
