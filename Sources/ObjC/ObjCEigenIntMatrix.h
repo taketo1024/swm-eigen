@@ -25,12 +25,11 @@ NS_SWIFT_NAME(setValue(_:row:col:));
 
 - (bool)isZero;
 - (instancetype)transposed;
-- (instancetype)inverse;
+- (nullable instancetype)inverse;
 
 - (int_t)determinant;
 - (int_t)trace;
 - (instancetype)submatrixFromRow:(int_t)i col:(int_t)j width:(int_t)w height:(int_t)h;
-- (void)serializeInto:(int_t *)array;
 
 - (bool)equals:(id)other;
 - (instancetype)add:(id)other;
@@ -39,6 +38,8 @@ NS_SWIFT_NAME(setValue(_:row:col:));
 - (instancetype)mulLeft:(int_t) r;
 - (instancetype)mulRight:(int_t) r;
 - (instancetype)mul:(id)other;
+
+- (void)serializeInto:(int_t *)array;
 
 @end
 

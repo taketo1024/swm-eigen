@@ -80,9 +80,11 @@ using LU = Eigen::FullPivLU<Matrix>;
 }
 
 - (instancetype)inverse {
-    const Matrix result =
-    _matrix.inverse();
-    return [[Self alloc] initWithMatrix:result];
+    if(_matrix.determinant() != 0) {
+        return [[Self alloc] initWithMatrix:_matrix.inverse()];
+    } else {
+        return nil;
+    }
 }
 
 -(instancetype)submatrixFromRow:(int_t)i col:(int_t)j width:(int_t)w height:(int_t)h {
@@ -125,6 +127,16 @@ using LU = Eigen::FullPivLU<Matrix>;
     }
 }
 
+- (void)dump {
+    for(int_t i = 0; i < self.rows; i++) {
+        for(int_t j = 0; j < self.cols; j++) {
+            auto a = _matrix(i, j);
+            cout << a << " ";
+        }
+        cout << endl;
+    }
+}
+
 @end
 
 @implementation ObjCEigenRationalMatrix(LU)
@@ -139,18 +151,22 @@ using LU = Eigen::FullPivLU<Matrix>;
 
 - (Self *)getL {
     auto solver = [self solver];
-    auto lu = solver.matrixLU();
-    auto l = lu.triangularView<Eigen::Lower>();
-    for(int_t i = 0; i < self.cols; i++) {
-        l(i, i) = 1;
-    }
+    auto n = self.rows;
+    auto r = solver.rank();
+    
+    Matrix l = Matrix::Identity(n, r);
+    l.triangularView<Eigen::StrictlyLower>() = solver.matrixLU().block(0, 0, n, r);
     return [[Self alloc] initWithMatrix:l];
 }
 
 - (Self *)getU {
     auto solver = [self solver];
-    auto lu = solver.matrixLU();
-    return [[Self alloc] initWithMatrix:lu.triangularView<Eigen::Upper>()];
+    auto m = self.cols;
+    auto r = solver.rank();
+    
+    Matrix u = Matrix::Zero(r, m);
+    u.triangularView<Eigen::Upper>() = solver.matrixLU().block(0, 0, r, m);
+    return [[Self alloc] initWithMatrix:u];
 }
 
 - (Self *)getP {

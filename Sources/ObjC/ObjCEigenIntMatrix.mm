@@ -80,8 +80,12 @@ using Map = Eigen::Map<Matrix>;
 }
 
 - (instancetype)inverse {
-    auto rinv = _matrix.cast<RationalNum>().inverse();
-    return [[Self alloc] initWithMatrix:rinv.cast<int_t>()];
+    auto rmat = _matrix.cast<RationalNum>();
+    if (rmat.determinant() != 0) {
+        return [[Self alloc] initWithMatrix:rmat.inverse().cast<int_t>()];
+    } else {
+        return nil;
+    }
 }
 
 -(instancetype)submatrixFromRow:(int_t)i col:(int_t)j width:(int_t)w height:(int_t)h {

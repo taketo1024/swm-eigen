@@ -46,14 +46,34 @@ extension EigenMatrix {
         .init(objCMatrix.transposed())
     }
 
+    public var isInvertible: Bool {
+        determinant.isInvertible
+    }
+    
     public var inverse: Self? {
-        isInvertible ? .init(objCMatrix.inverse()) : nil
+        objCMatrix.inverse().flatMap { .init($0) }
     }
 
     public func submatrix(rowRange: CountableRange<Int>,  colRange: CountableRange<Int>) -> Self {
         .init(objCMatrix.submatrix(fromRow: rowRange.startIndex, col: colRange.startIndex, width: rowRange.endIndex - rowRange.startIndex, height: colRange.endIndex - colRange.startIndex))
     }
 
+    public func concat(_ B: Self) -> Self {
+        fatalError("Not implemented yet.")
+    }
+    
+    public func stack(_ B: Self) -> Self {
+        fatalError("Not implemented yet.")
+    }
+    
+    public func permuteRows(by σ: Permutation<DynamicSize>) -> Self {
+        fatalError("Not implemented yet.")
+    }
+    
+    public func permuteCols(by σ: Permutation<DynamicSize>) -> Self {
+        fatalError("Not implemented yet.")
+    }
+    
     public static func ==(a: Self, b: Self) -> Bool {
         a.objCMatrix.equals(b.objCMatrix)
     }
@@ -72,6 +92,14 @@ extension EigenMatrix {
 
     public static func *(a: Self, b: Self) -> Self {
         .init(a.objCMatrix.mul(b.objCMatrix))
+    }
+    
+    public static func ⊕ (a: Self, b: Self) -> Self {
+        fatalError("Not implemented yet.")
+    }
+    
+    public static func ⊗ (a: Self, b: Self) -> Self {
+        fatalError("Not implemented yet.")
     }
 }
 

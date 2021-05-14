@@ -26,10 +26,11 @@ NS_SWIFT_NAME(setValue(_:row:col:));
 
 - (bool)isZero;
 - (instancetype)transposed;
-- (instancetype)inverse;
+- (nullable instancetype)inverse;
 
 - (rational_t)determinant;
 - (rational_t)trace;
+
 - (instancetype)submatrixFromRow:(int_t)i col:(int_t)j width:(int_t)w height:(int_t)h;
 
 - (bool)equals:(id)other;
@@ -44,8 +45,6 @@ NS_SWIFT_NAME(setValue(_:row:col:));
 
 - (int_t)countNonZeros;
 - (void)copyNonZerosInto:(rational_triplet_t *)array;
-
-- (nullable instancetype)solve: (id)b;
 
 @end
 

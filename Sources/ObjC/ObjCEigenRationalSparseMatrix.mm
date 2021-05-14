@@ -154,15 +154,4 @@ using SparseLU = Eigen::SparseLU<Matrix, Eigen::COLAMDOrdering<int> >;
     }
 }
 
-- (Self *)solve: (Self *)b_ {
-    SparseLU solver;
-    
-    solver.analyzePattern(_matrix);
-    solver.factorize(_matrix);
-    
-    auto b = b_.matrix;
-    auto x = solver.solve(b);
-    return [[Self alloc] initWithMatrix:x];
-}
-
 @end

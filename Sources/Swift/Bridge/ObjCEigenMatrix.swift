@@ -23,13 +23,12 @@ public protocol ObjCEigenMatrix: AnyObject {
     
     func isZero() -> Bool
     func transposed() -> Self
-    func inverse() -> Self
+    func inverse() -> Self?
 
     func determinant() -> Coeff
     func trace() -> Coeff
     
     func submatrix(fromRow i: Int, col j: Int, width w: Int, height h: Int) -> Self
-    func serialize(into array: UnsafeMutablePointer<Coeff>)
     
     func equals(_ other: Any) -> Bool
     func add(_ other: Any) -> Self
@@ -38,6 +37,8 @@ public protocol ObjCEigenMatrix: AnyObject {
     func mulLeft(_ r: Coeff) -> Self
     func mulRight(_ r: Coeff) -> Self
     func mul(_ other: Any) -> Self
+    
+    func serialize(into array: UnsafeMutablePointer<Coeff>)
 }
 
 public protocol ObjCEigenMatrix_LU: ObjCEigenMatrix {

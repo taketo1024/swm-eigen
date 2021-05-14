@@ -75,7 +75,11 @@ using Map = Eigen::Map<Matrix>;
 }
 
 - (instancetype)inverse {
-    return [[Self alloc] initWithMatrix:_matrix.inverse()];
+    if(_matrix.determinant() != 0) {
+        return [[Self alloc] initWithMatrix:_matrix.inverse()];
+    } else {
+        return nil;
+    }
 }
 
 -(instancetype)submatrixFromRow:(int_t)i col:(int_t)j width:(int_t)w height:(int_t)h {
@@ -83,7 +87,7 @@ using Map = Eigen::Map<Matrix>;
 }
 
 - (bool)equals:(Self *)other {
-    return _matrix == other.matrix;
+    return _matrix.isApprox(other.matrix);
 }
 
 - (Self *)add:(Self *)other {
