@@ -64,7 +64,7 @@ using LU = Eigen::FullPivLU<Matrix>;
 }
 
 - (bool)isZero {
-    _matrix.isZero(0);
+    return _matrix.isZero(0);
 }
 
 - (instancetype)transposed {
@@ -141,15 +141,23 @@ using LU = Eigen::FullPivLU<Matrix>;
 
 @implementation ObjCEigenRationalMatrix(LU)
 
+- (bool)isZeroSize {
+    return (self.rows * self.cols == 0);
+}
+
 - (LU)solver {
     if (!_solver_initialized) {
-        _solver = LU(_matrix);
+        _solver = [self isZeroSize] ? LU() : LU(_matrix);
         _solver_initialized = true;
     }
     return _solver;
 }
 
 - (Self *)getL {
+    if([self isZeroSize]) {
+        return [[Self alloc] initWithMatrix:Matrix::Zero(self.rows, 0)];
+    }
+    
     auto solver = [self solver];
     auto n = self.rows;
     auto r = solver.rank();
@@ -160,6 +168,10 @@ using LU = Eigen::FullPivLU<Matrix>;
 }
 
 - (Self *)getU {
+    if([self isZeroSize]) {
+        return [[Self alloc] initWithMatrix:Matrix::Zero(0, self.cols)];
+    }
+    
     auto solver = [self solver];
     auto m = self.cols;
     auto r = solver.rank();
@@ -170,35 +182,57 @@ using LU = Eigen::FullPivLU<Matrix>;
 }
 
 - (Self *)getP {
+    if([self isZeroSize]) {
+        return [[Self alloc] initWithMatrix:Matrix::Identity(self.rows, self.rows)];
+    }
+
     auto solver = [self solver];
     auto P = solver.permutationP();
     return [[Self alloc] initWithMatrix:solver.permutationP()];
 }
 
 - (Self *)getQ {
+    if([self isZeroSize]) {
+        return [[Self alloc] initWithMatrix:Matrix::Identity(self.cols, self.cols)];
+    }
+
     auto solver = [self solver];
     return [[Self alloc] initWithMatrix:solver.permutationQ()];
 }
 
 - (int_t)rank {
-    return [self solver].rank();
+    return [self isZeroSize] ? 0 : [self solver].rank();
 }
 
 - (int_t)nullity {
-    return [self solver].dimensionOfKernel();
+    return [self isZeroSize] ? self.cols : [self solver].dimensionOfKernel();
 }
 
 - (Self *)image {
+    if([self isZeroSize]) {
+        return [[Self alloc] initWithMatrix:Matrix::Zero(self.rows, 0)];
+    }
+    
     auto solver = [self solver];
     return [[Self alloc] initWithMatrix:solver.image(_matrix)];
 }
 
 - (Self *)kernel {
+    if([self isZeroSize]) {
+        return [[Self alloc] initWithMatrix:Matrix::Identity(self.cols, self.cols)];
+    }
+    
     auto solver = [self solver];
     return [[Self alloc] initWithMatrix:solver.kernel()];
 }
 
 - (Self *)solve: (Self *)b_ {
+    if([self isZeroSize]) {
+        return [b_ isZero]
+        ? [[Self alloc] initWithMatrix:Matrix::Zero(self.cols, b_.cols)]
+        : nil;
+    }
+    
     auto solver = [self solver];
     auto b = b_.matrix;
     auto x = solver.solve(b);

@@ -59,7 +59,7 @@ using Map = Eigen::Map<Matrix>;
 }
 
 - (bool)isZero {
-    _matrix.isZero(0);
+    return _matrix.isZero(0);
 }
 
 - (instancetype)transposed {
