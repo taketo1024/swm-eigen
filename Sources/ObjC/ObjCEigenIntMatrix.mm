@@ -92,6 +92,14 @@ using Map = Eigen::Map<Matrix>;
     return [[Self alloc] initWithMatrix:_matrix.block(i, j, w, h)];
 }
 
+- (instancetype)permuteRows:(perm_t)p {
+    @throw [NSException exceptionWithName:@"Not yet implemented." reason:nil userInfo:nil];
+}
+
+- (instancetype)permuteCols:(perm_t)p {
+    @throw [NSException exceptionWithName:@"Not yet implemented." reason:nil userInfo:nil];
+}
+
 - (bool)equals:(Self *)other {
     return _matrix == other.matrix;
 }

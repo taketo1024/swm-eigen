@@ -18,12 +18,12 @@ extension EigenMatrix_LU where ObjCMatrix: ObjCEigenMatrix_LU {
         .init(objCMatrix.getU())
     }
     
-    public var P: Self {
-        .init(objCMatrix.getP())
+    public var P: Permutation<DynamicSize> {
+        .init(fromCType: objCMatrix.getP())
     }
 
-    public var Q: Self {
-        .init(objCMatrix.getQ())
+    public var Q: Permutation<DynamicSize> {
+        .init(fromCType: objCMatrix.getQ())
     }
     
     public var rank: Int {
@@ -46,4 +46,3 @@ extension EigenMatrix_LU where ObjCMatrix: ObjCEigenMatrix_LU {
         objCMatrix.solve(b.objCMatrix).flatMap{ .init($0) }
     }
 }
-

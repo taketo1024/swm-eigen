@@ -18,6 +18,8 @@ using LU = Eigen::FullPivLU<Matrix>;
 @interface ObjCEigenRationalMatrix () {
     LU _solver;
     bool _solver_initialized;
+    perm_t _leftPerm;
+    perm_t _rightPerm;
 }
 
 @property (readonly) Matrix matrix;
@@ -32,6 +34,13 @@ using LU = Eigen::FullPivLU<Matrix>;
     self = [super init];
     _matrix = matrix;
     return self;
+}
+
+- (void)dealloc {
+    if (_solver_initialized) {
+        free_perm(_leftPerm);
+        free_perm(_rightPerm);
+    }
 }
 
 - (instancetype)copy {
@@ -91,6 +100,24 @@ using LU = Eigen::FullPivLU<Matrix>;
     return [[Self alloc] initWithMatrix:_matrix.block(i, j, w, h)];
 }
 
+- (instancetype)permuteRows:(perm_t)p {
+    Eigen::VectorXi indices(p.length);
+    for(int_t i = 0; i < p.length; ++i) {
+        indices[i] = p.indices[i];
+    }
+    auto P = Eigen::PermutationMatrix<Eigen::Dynamic>(indices);
+    return [[Self alloc] initWithMatrix:P * _matrix];
+}
+
+- (instancetype)permuteCols:(perm_t)p {
+    Eigen::VectorXi indices(p.length);
+    for(int_t i = 0; i < p.length; ++i) {
+        indices[i] = p.indices[i];
+    }
+    auto P = Eigen::PermutationMatrix<Eigen::Dynamic>(indices);
+    return [[Self alloc] initWithMatrix:_matrix * P.transpose()];
+}
+
 - (bool)equals:(Self *)other {
     return _matrix == other.matrix;
 }
@@ -127,16 +154,6 @@ using LU = Eigen::FullPivLU<Matrix>;
     }
 }
 
-- (void)dump {
-    for(int_t i = 0; i < self.rows; i++) {
-        for(int_t j = 0; j < self.cols; j++) {
-            auto a = _matrix(i, j);
-            cout << a << " ";
-        }
-        cout << endl;
-    }
-}
-
 @end
 
 @implementation ObjCEigenRationalMatrix(LU)
@@ -145,11 +162,43 @@ using LU = Eigen::FullPivLU<Matrix>;
     return (self.rows * self.cols == 0);
 }
 
-- (LU)solver {
-    if (!_solver_initialized) {
-        _solver = [self isZeroSize] ? LU() : LU(_matrix);
-        _solver_initialized = true;
+- (void)initializeSolver {
+    if (_solver_initialized) {
+        return;
     }
+    
+    _solver = [self isZeroSize] ? LU() : LU(_matrix);
+    _leftPerm  = [self makeP: _solver.permutationP()];
+    _rightPerm = [self makeQ: _solver.permutationQ()];
+    _solver_initialized = true;
+}
+
+- (perm_t)makeP:(LU::PermutationPType)P {
+    int_t n = self.rows;
+    perm_t p = init_perm(n);
+    
+    if(![self isZeroSize]) {
+        for(int_t i = 0; i < n; ++i) {
+            p.indices[i] = P.indices()[i];
+        }
+    }
+    return p;
+}
+
+- (perm_t)makeQ:(LU::PermutationPType)Q {
+    int_t m = self.cols;
+    perm_t q = init_perm(m);
+    
+    if(![self isZeroSize]) {
+        for(int_t i = 0; i < m; ++i) {
+            q.indices[i] = Q.indices()[i];
+        }
+    }
+    return q;
+}
+
+- (LU)solver {
+    [self initializeSolver];
     return _solver;
 }
 
@@ -181,23 +230,14 @@ using LU = Eigen::FullPivLU<Matrix>;
     return [[Self alloc] initWithMatrix:u];
 }
 
-- (Self *)getP {
-    if([self isZeroSize]) {
-        return [[Self alloc] initWithMatrix:Matrix::Identity(self.rows, self.rows)];
-    }
-
-    auto solver = [self solver];
-    auto P = solver.permutationP();
-    return [[Self alloc] initWithMatrix:solver.permutationP()];
+- (perm_t)getP {
+    [self initializeSolver];
+    return _leftPerm;
 }
 
-- (Self *)getQ {
-    if([self isZeroSize]) {
-        return [[Self alloc] initWithMatrix:Matrix::Identity(self.cols, self.cols)];
-    }
-
-    auto solver = [self solver];
-    return [[Self alloc] initWithMatrix:solver.permutationQ()];
+- (perm_t)getQ {
+    [self initializeSolver];
+    return _rightPerm;
 }
 
 - (int_t)rank {
@@ -214,6 +254,7 @@ using LU = Eigen::FullPivLU<Matrix>;
     }
     
     auto solver = [self solver];
+    
     return [[Self alloc] initWithMatrix:solver.image(_matrix)];
 }
 

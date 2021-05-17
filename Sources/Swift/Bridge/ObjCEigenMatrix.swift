@@ -29,7 +29,9 @@ public protocol ObjCEigenMatrix: AnyObject {
     func trace() -> Coeff
     
     func submatrix(fromRow i: Int, col j: Int, width w: Int, height h: Int) -> Self
-    
+    func permuteRows(_ p: perm_t) -> Self
+    func permuteCols(_ p: perm_t) -> Self
+
     func equals(_ other: Any) -> Bool
     func add(_ other: Any) -> Self
     func negate() -> Self
@@ -44,8 +46,8 @@ public protocol ObjCEigenMatrix: AnyObject {
 public protocol ObjCEigenMatrix_LU: ObjCEigenMatrix {
     func getL() -> Self
     func getU() -> Self
-    func getP() -> Self
-    func getQ() -> Self
+    func getP() -> perm_t
+    func getQ() -> perm_t
     func rank() -> Int
     func nullity() -> Int
     func kernel() -> Self

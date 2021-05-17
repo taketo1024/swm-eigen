@@ -67,11 +67,19 @@ extension EigenMatrix {
     }
     
     public func permuteRows(by σ: Permutation<DynamicSize>) -> Self {
-        fatalError("Not implemented yet.")
+        let p = init_perm(σ.length)
+        σ.copy(into: p)
+        defer { free_perm(p) }
+        
+        return .init(objCMatrix.permuteRows(p))
     }
     
     public func permuteCols(by σ: Permutation<DynamicSize>) -> Self {
-        fatalError("Not implemented yet.")
+        let p = init_perm(σ.length)
+        σ.copy(into: p)
+        defer { free_perm(p) }
+        
+        return .init(objCMatrix.permuteCols(p))
     }
     
     public static func ==(a: Self, b: Self) -> Bool {

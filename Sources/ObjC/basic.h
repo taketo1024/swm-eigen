@@ -23,4 +23,12 @@ typedef struct {
     rational_t value;
 } rational_triplet_t;
 
+typedef struct {
+    int_t length;
+    int_t *indices;
+} perm_t;
+
+perm_t init_perm(int_t length);
+void free_perm(perm_t p);
+
 #endif /* Header_h */

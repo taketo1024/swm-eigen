@@ -21,15 +21,3 @@ public struct EigenRationalMatrix: EigenMatrix_LU {
 extension ObjCEigenRationalMatrix: ObjCEigenMatrix_LU {
     public typealias Coeff = RationalNumber.CType
 }
-
-extension RationalNumber: CTypeConvertible {
-    @_transparent
-    public init(fromCType r: rational_t) {
-        self.init(r.p, r.q)
-    }
-    
-    @_transparent
-    public var toCType: rational_t {
-        rational_t(p: numerator, q: denominator)
-    }
-}

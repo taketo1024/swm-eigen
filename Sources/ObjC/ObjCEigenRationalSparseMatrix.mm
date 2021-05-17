@@ -103,6 +103,14 @@ using SparseLU = Eigen::SparseLU<Matrix, Eigen::COLAMDOrdering<int> >;
     return [[ObjCEigenRationalSparseMatrix alloc] initWithMatrix:_matrix.block(i, j, w, h)];
 }
 
+- (instancetype)permuteRows:(perm_t)p {
+    @throw [NSException exceptionWithName:@"Not yet implemented." reason:nil userInfo:nil];
+}
+
+- (instancetype)permuteCols:(perm_t)p {
+    @throw [NSException exceptionWithName:@"Not yet implemented." reason:nil userInfo:nil];
+}
+
 - (bool)equals:(ObjCEigenRationalSparseMatrix *)other {
     return _matrix.isApprox(other.matrix);
 }

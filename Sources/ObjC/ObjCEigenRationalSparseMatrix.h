@@ -32,6 +32,8 @@ NS_SWIFT_NAME(setValue(_:row:col:));
 - (rational_t)trace;
 
 - (instancetype)submatrixFromRow:(int_t)i col:(int_t)j width:(int_t)w height:(int_t)h;
+- (instancetype)permuteRows:(perm_t)p;
+- (instancetype)permuteCols:(perm_t)p;
 
 - (bool)equals:(id)other;
 - (instancetype)add:(id)other;
