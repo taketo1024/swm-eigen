@@ -23,7 +23,8 @@ let package = Package(
             path: "Sources/ObjC",
             cxxSettings: [
                 .headerSearchPath("../Eigen/"),
-                .define("EIGEN_MPL2_ONLY")
+                .define("EIGEN_MPL2_ONLY"),
+                .define("EIGEN_NO_DEBUG"),
             ]
         ),
         .target(
