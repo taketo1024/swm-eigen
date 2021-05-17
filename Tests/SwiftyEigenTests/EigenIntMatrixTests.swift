@@ -12,7 +12,7 @@ import SwiftyMath
 
 class EigenIntMatrixTests: XCTestCase {
     
-    typealias M<n: SizeType, m: SizeType> = MatrixInterface<EigenIntMatrix, n, m>
+    typealias M<n: SizeType, m: SizeType> = MatrixIF<EigenIntMatrix, n, m>
     typealias M2 = M<_2, _2>
 
     func testInitByInitializer() {

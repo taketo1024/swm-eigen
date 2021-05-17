@@ -9,7 +9,7 @@ import SwiftyMath
 import SwiftyEigen
 
 typealias Impl = EigenRationalMatrix
-typealias M<n: SizeType, m: SizeType> = MatrixInterface<Impl, n, m>
+typealias M<n: SizeType, m: SizeType> = MatrixIF<Impl, n, m>
 
 let A: M<_4, _2> =
     [1, 2,

@@ -12,7 +12,7 @@ import SwiftyMath
 
 class EigenRationalMatrixTests: XCTestCase {
     
-    typealias M<n: SizeType, m: SizeType> = MatrixInterface<EigenRationalMatrix, n, m>
+    typealias M<n: SizeType, m: SizeType> = MatrixIF<EigenRationalMatrix, n, m>
     typealias M2 = M<_2, _2>
     
     func testInitByInitializer() {
