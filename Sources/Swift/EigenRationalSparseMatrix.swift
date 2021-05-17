@@ -36,11 +36,11 @@ public struct EigenRationalSparseMatrix: EigenMatrix {
         objCMatrix.countNonZeros()
     }
     
-    public var nonZeroComponents: [MatrixComponent<BaseRing>] {
+    public var nonZeroComponents: [MatrixEntry<BaseRing>] {
         let l = numberOfNonZeros
         let p = UnsafeMutableBufferPointer<rational_triplet_t>.allocate(capacity: l)
         objCMatrix.copyNonZeros(into: p.baseAddress!)
-        return p.map{ t in  MatrixComponent(t.row, t.col, BaseRing(fromCType: t.value) ) }
+        return p.map{ t in MatrixEntry(t.row, t.col, BaseRing(fromCType: t.value) ) }
     }
 }
 
