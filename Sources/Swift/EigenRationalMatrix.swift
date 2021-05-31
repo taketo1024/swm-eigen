@@ -5,9 +5,9 @@
 //  Created by Taketo Sano on 2021/05/11.
 //
 
-import SwiftyMath
+import SwmCore
 
-public struct EigenRationalMatrix: EigenMatrix_LU {
+public struct EigenRationalMatrix: EigenMatrix {
     public typealias ObjCMatrix = ObjCEigenRationalMatrix
     public typealias BaseRing = RationalNumber
 
@@ -18,6 +18,6 @@ public struct EigenRationalMatrix: EigenMatrix_LU {
     }
 }
 
-extension ObjCEigenRationalMatrix: ObjCEigenMatrix_LU {
+extension ObjCEigenRationalMatrix: ObjCEigenMatrix {
     public typealias Coeff = RationalNumber.CType
 }

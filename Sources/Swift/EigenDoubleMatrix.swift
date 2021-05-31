@@ -5,7 +5,7 @@
 //  Created by Taketo Sano on 2021/05/11.
 //
 
-import SwiftyMath
+import SwmCore
 
 public struct EigenDoubleMatrix: EigenMatrix {
     public typealias ObjCMatrix = ObjCEigenDoubleMatrix

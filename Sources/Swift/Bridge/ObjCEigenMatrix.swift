@@ -5,7 +5,7 @@
 //  Created by Taketo Sano on 2021/05/11.
 //
 
-import SwiftyMath
+import SwmCore
 
 public protocol ObjCEigenMatrix: AnyObject {
     associatedtype Coeff
@@ -42,16 +42,3 @@ public protocol ObjCEigenMatrix: AnyObject {
     
     func serialize(into array: UnsafeMutablePointer<Coeff>)
 }
-
-public protocol ObjCEigenMatrix_LU: ObjCEigenMatrix {
-    func getL() -> Self
-    func getU() -> Self
-    func getP() -> perm_t
-    func getQ() -> perm_t
-    func rank() -> Int
-    func nullity() -> Int
-    func kernel() -> Self
-    func image() -> Self
-    func solve(_ b: Any) -> Self?
-}
-

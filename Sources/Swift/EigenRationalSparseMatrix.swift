@@ -5,9 +5,9 @@
 //  Created by Taketo Sano on 2021/05/11.
 //
 
-import SwiftyMath
+import SwmCore
 
-public struct EigenRationalSparseMatrix: EigenMatrix {
+public struct EigenRationalSparseMatrix: EigenMatrix, SparseMatrixImpl {
     public typealias ObjCMatrix = ObjCEigenRationalSparseMatrix
     public typealias BaseRing = RationalNumber
 
@@ -17,7 +17,7 @@ public struct EigenRationalSparseMatrix: EigenMatrix {
         self.objCMatrix = objCMatrix
     }
     
-    public init(size: (Int, Int), initializer: (Initializer) -> Void) {
+    public init(size: MatrixSize, initializer: (Initializer) -> Void) {
         let (n, m) = size
         var triplets = Array<rational_triplet_t>()
         triplets.reserveCapacity(n * m / 10) // TODO
@@ -36,11 +36,14 @@ public struct EigenRationalSparseMatrix: EigenMatrix {
         objCMatrix.countNonZeros()
     }
     
-    public var nonZeroComponents: [MatrixEntry<BaseRing>] {
+    public var nonZeroEntries: AnySequence<MatrixEntry<BaseRing>> {
         let l = numberOfNonZeros
         let p = UnsafeMutableBufferPointer<rational_triplet_t>.allocate(capacity: l)
         objCMatrix.copyNonZeros(into: p.baseAddress!)
-        return p.map{ t in MatrixEntry(t.row, t.col, BaseRing(fromCType: t.value) ) }
+        
+        return AnySequence(
+            p.map{ t in MatrixEntry(t.row, t.col, BaseRing(fromCType: t.value) ) }
+        )
     }
 }
 

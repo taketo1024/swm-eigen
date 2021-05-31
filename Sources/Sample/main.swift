@@ -5,7 +5,7 @@
 //  Created by Taketo Sano on 2021/05/11.
 //
 
-import SwiftyMath
+import SwmCore
 import SwiftyEigen
 
 typealias Impl = EigenRationalMatrix

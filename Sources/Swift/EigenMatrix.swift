@@ -5,7 +5,7 @@
 //  Created by Taketo Sano on 2021/05/11.
 //
 
-import SwiftyMath
+import SwmCore
 
 public protocol EigenMatrix: MatrixImpl {
     associatedtype ObjCMatrix: ObjCEigenMatrix
@@ -24,12 +24,12 @@ extension EigenMatrix {
         }
     }
     
-    public static func zero(size: (Int, Int)) -> Self {
+    public static func zero(size: MatrixSize) -> Self {
         let matrix = ObjCMatrix.zeros(rows: size.0, cols: size.1)
         return self.init(matrix)
     }
     
-    public static func identity(size: (Int, Int)) -> Self {
+    public static func identity(size: MatrixSize) -> Self {
         let matrix = ObjCMatrix.identity(rows: size.0, cols: size.1)
         return self.init(matrix)
     }
@@ -66,7 +66,11 @@ extension EigenMatrix {
         fatalError("Not implemented yet.")
     }
     
-    public func permuteRows(by σ: Permutation<DynamicSize>) -> Self {
+    public func permute(rowsBy p: Permutation<anySize>, colsBy q: Permutation<anySize>) -> Self {
+        fatalError("Not implemented yet.")
+    }
+    
+    public func permuteRows(by σ: Permutation<anySize>) -> Self {
         let p = init_perm(σ.length)
         σ.copy(into: p)
         defer { free_perm(p) }
@@ -74,7 +78,7 @@ extension EigenMatrix {
         return .init(objCMatrix.permuteRows(p))
     }
     
-    public func permuteCols(by σ: Permutation<DynamicSize>) -> Self {
+    public func permuteCols(by σ: Permutation<anySize>) -> Self {
         let p = init_perm(σ.length)
         σ.copy(into: p)
         defer { free_perm(p) }
@@ -112,7 +116,7 @@ extension EigenMatrix {
 }
 
 extension EigenMatrix where BaseRing == ObjCMatrix.Coeff {
-    public init(size: (Int, Int), initializer: (Initializer) -> Void) {
+    public init(size: MatrixSize, initializer: (Initializer) -> Void) {
         let objCMatrix = ObjCMatrix.zeros(rows: size.0, cols: size.1)
         initializer { (i, j, a) in
             assert( 0 <= i && i < size.0 )
@@ -158,7 +162,7 @@ extension EigenMatrix where BaseRing == ObjCMatrix.Coeff {
 }
 
 extension EigenMatrix where BaseRing: CTypeConvertible, BaseRing.CType == ObjCMatrix.Coeff {
-    public init(size: (Int, Int), initializer: (Initializer) -> Void) {
+    public init(size: MatrixSize, initializer: (Initializer) -> Void) {
         let objCMatrix = ObjCMatrix.zeros(rows: size.0, cols: size.1)
         initializer { (i, j, a) in
             assert( 0 <= i && i < size.0 )
