@@ -1,14 +1,14 @@
 //
-//  SwiftyMathTests.swift
-//  SwiftyMathTests
+//  SwmCoreTests.swift
+//  SwmCoreTests
 //
 //  Created by Taketo Sano on 2017/05/03.
 //  Copyright © 2017年 Taketo Sano. All rights reserved.
 //
 
 import XCTest
-import SwiftyMath
-@testable import SwiftyEigen
+import SwmCore
+@testable import SwmEigen
 
 class EigenRationalSparseMatrixTests: XCTestCase {
     
@@ -85,6 +85,16 @@ class EigenRationalSparseMatrixTests: XCTestCase {
         XCTAssertEqual(a + b, [3,5,7,9])
     }
     
+    func testIsZero() {
+        var a: M2 = [0,0,0,0]
+        XCTAssertTrue(a.isZero)
+        
+        a[0, 0] = 1
+        a[0, 0] = 0
+        
+        XCTAssertTrue(a.isZero)
+    }
+    
     func testZero() {
         let a: M2 = [1,2,3,4]
         let o = M2.zero
@@ -129,16 +139,16 @@ class EigenRationalSparseMatrixTests: XCTestCase {
         XCTAssertEqual(e * a, a)
     }
     
-    func testInv() {
-        let a: M2 = [1,2,2,3]
-        XCTAssertEqual(a.inverse!, [-3,2,2,-1])
-    }
+//    func testInv() {
+//        let a: M2 = [1,2,2,3]
+//        XCTAssertEqual(a.inverse!, [-3,2,2,-1])
+//    }
 
-    func testNonInvertible() {
-        let b: M2 = [1, 0, 0, 0]
-        XCTAssertFalse(b.isInvertible)
-        XCTAssertNil(b.inverse)
-    }
+//    func testNonInvertible() {
+//        let b: M2 = [1, 0, 0, 0]
+//        XCTAssertFalse(b.isInvertible)
+//        XCTAssertNil(b.inverse)
+//    }
     
     func testPow() {
         let a: M2 = [1,2,3,4]
@@ -148,24 +158,24 @@ class EigenRationalSparseMatrixTests: XCTestCase {
         XCTAssertEqual(a.pow(3), [37,54,81,118])
     }
     
-    func testTrace() {
-        let a: M2 = [1,2,3,4]
-        XCTAssertEqual(a.trace, 5)
-    }
+//    func testTrace() {
+//        let a: M2 = [1,2,3,4]
+//        XCTAssertEqual(a.trace, 5)
+//    }
     
-    func testDet() {
-        let a: M2 = [1,2,3,4]
-        XCTAssertEqual(a.determinant, -2)
-    }
+//    func testDet() {
+//        let a: M2 = [1,2,3,4]
+//        XCTAssertEqual(a.determinant, -2)
+//    }
 
-    func testDet4() {
-        let a: M<_4, _4> =
-            [3,-1,2,4,
-             2,1,1,3,
-             -2,0,3,-1,
-             0,-2,1,3]
-        XCTAssertEqual(a.determinant, 66)
-    }
+//    func testDet4() {
+//        let a: M<_4, _4> =
+//            [3,-1,2,4,
+//             2,1,1,3,
+//             -2,0,3,-1,
+//             0,-2,1,3]
+//        XCTAssertEqual(a.determinant, 66)
+//    }
     
     func testTransposed() {
         let a: M2 = [1,2,3,4]
@@ -173,15 +183,15 @@ class EigenRationalSparseMatrixTests: XCTestCase {
     }
     
     func testAsStatic() {
-        let a = M<DynamicSize, DynamicSize>(size: (2, 3), grid: [1,2,3,4,5,6])
+        let a = M<anySize, anySize>(size: (2, 3), grid: [1,2,3,4,5,6])
         let b = a.as(M<_2, _3>.self)
         XCTAssertEqual(b, M<_2, _3>(grid: [1,2,3,4,5,6]))
     }
     
     func testAsDynamic() {
         let a = M<_2, _3>(grid: [1,2,3,4,5,6])
-        let b = a.as(M<DynamicSize, DynamicSize>.self)
-        XCTAssertEqual(b, M<DynamicSize, DynamicSize>(size: (2, 3), grid: [1,2,3,4,5,6]))
+        let b = a.as(M<anySize, anySize>.self)
+        XCTAssertEqual(b, M<anySize, anySize>(size: (2, 3), grid: [1,2,3,4,5,6]))
     }
     
     func testSubmatrixRow() {

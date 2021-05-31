@@ -81,6 +81,7 @@ using SparseLU = Eigen::SparseLU<Matrix, Eigen::COLAMDOrdering<int> >;
 }
 
 - (bool)isZero {
+    _matrix = _matrix.pruned();
     return _matrix.nonZeros() == 0;
 }
 

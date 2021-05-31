@@ -1,20 +1,20 @@
 //
-//  SwiftyMathTests.swift
-//  SwiftyMathTests
+//  SwmCoreTests.swift
+//  SwmCoreTests
 //
 //  Created by Taketo Sano on 2017/05/03.
 //  Copyright © 2017年 Taketo Sano. All rights reserved.
 //
 
 import XCTest
-import SwiftyMath
-@testable import SwiftyEigen
+import SwmCore
+@testable import SwmEigen
 
-class EigenRationalMatrixTests: XCTestCase {
+class EigenIntMatrixTests: XCTestCase {
     
-    typealias M<n: SizeType, m: SizeType> = MatrixIF<EigenRationalMatrix, n, m>
+    typealias M<n: SizeType, m: SizeType> = MatrixIF<EigenIntMatrix, n, m>
     typealias M2 = M<_2, _2>
-    
+
     func testInitByInitializer() {
         let a = M2 { setEntry in
             setEntry(0, 1, 2)
@@ -47,7 +47,7 @@ class EigenRationalMatrixTests: XCTestCase {
     
     func testInitWithMissingGrid() {
         let a: M2 = [1,2,3]
-        XCTAssertEqual(a, [1,2,3,0])
+        XCTAssertEqual(a.serialize(), [1,2,3,0])
     }
 
     func testSubscript() {
@@ -83,6 +83,16 @@ class EigenRationalMatrixTests: XCTestCase {
         let a: M2 = [1,2,3,4]
         let b: M2 = [2,3,4,5]
         XCTAssertEqual(a + b, [3,5,7,9])
+    }
+    
+    func testIsZero() {
+        var a: M2 = [0,0,0,0]
+        XCTAssertTrue(a.isZero)
+        
+        a[0, 0] = 1
+        a[0, 0] = 0
+        
+        XCTAssertTrue(a.isZero)
     }
     
     func testZero() {
@@ -173,15 +183,15 @@ class EigenRationalMatrixTests: XCTestCase {
     }
     
     func testAsStatic() {
-        let a = M<DynamicSize, DynamicSize>(size: (2, 3), grid: [1,2,3,4,5,6])
+        let a = M<anySize, anySize>(size: (2, 3), grid: [1,2,3,4,5,6])
         let b = a.as(M<_2, _3>.self)
         XCTAssertEqual(b, M<_2, _3>(grid: [1,2,3,4,5,6]))
     }
     
     func testAsDynamic() {
         let a = M<_2, _3>(grid: [1,2,3,4,5,6])
-        let b = a.as(M<DynamicSize, DynamicSize>.self)
-        XCTAssertEqual(b, M<DynamicSize, DynamicSize>(size: (2, 3), grid: [1,2,3,4,5,6]))
+        let b = a.as(M<anySize, anySize>.self)
+        XCTAssertEqual(b, M<anySize, anySize>(size: (2, 3), grid: [1,2,3,4,5,6]))
     }
     
     func testSubmatrixRow() {
