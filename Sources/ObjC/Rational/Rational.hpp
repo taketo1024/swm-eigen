@@ -12,8 +12,6 @@
 #include <Eigen/Dense>
 #include "../basic.h"
 
-using namespace std;
-
 class RationalNum {
     friend RationalNum operator+(const RationalNum& left, const RationalNum& right);
     friend RationalNum operator-(const RationalNum& left, const RationalNum& right);
@@ -25,13 +23,13 @@ class RationalNum {
     friend bool operator>(const RationalNum& left, const RationalNum& right);
     friend bool operator<=(const RationalNum& left, const RationalNum& right);
     friend bool operator>=(const RationalNum& left, const RationalNum& right);
-    friend ostream& operator<<(ostream& out, const RationalNum& obj);
-    friend istream& operator>>(istream& in, RationalNum& obj);
+    friend std::ostream& operator<<(std::ostream& out, const RationalNum& obj);
+    friend std::istream& operator>>(std::istream& in, RationalNum& obj);
     
 public:
-    RationalNum();
-    RationalNum(rational_t x);
-    RationalNum(int_t numerator_, int_t denominator_ = 1);
+    RationalNum(): numerator(0), denominator(1) {}
+    RationalNum(rational_t x): numerator(x.p), denominator(x.q) {}
+    RationalNum(int_t numerator_, int_t denominator_ = 1): numerator(numerator_), denominator(denominator_) {}
     
     RationalNum& operator=(const RationalNum& obj);
     RationalNum& operator+=(const RationalNum& obj);
@@ -47,13 +45,13 @@ public:
     
     explicit operator int_t() const;
     
-    int_t getNumerator() const;
-    int_t getDenominator() const;
+    int_t getNumerator() const { return numerator; }
+    int_t getDenominator() const { return denominator; }
     
 private:
     int_t numerator;
     int_t denominator;
-    void simplify();
+    RationalNum& simplify();
 };
 
 namespace Eigen {

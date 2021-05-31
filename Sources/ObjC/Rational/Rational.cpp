@@ -16,28 +16,43 @@
 using namespace std;
 
 int_t gcd(int_t a, int_t b) {
-    return b == int_t(0) ? a : gcd(b, a % b);
+    return b == 0 ? a : gcd(b, a % b);
+}
+
+RationalNum& RationalNum::simplify() {
+    if (denominator < 0) {
+        numerator = -numerator;
+        denominator = -denominator;
+    }
+    if (denominator > 1) {
+        int_t d = absInt(gcd(numerator, denominator));
+        if (d > 1) {
+            numerator = numerator / d;
+            denominator = denominator / d;
+        }
+    }
+    return *this;
 }
 
 //friend functions definitions
 RationalNum operator+(const RationalNum& left, const RationalNum& right) {
-    return RationalNum(left.numerator * right.denominator + left.denominator * right.numerator, left.denominator * right.denominator);
+    return RationalNum(left.numerator * right.denominator + left.denominator * right.numerator, left.denominator * right.denominator).simplify();
 }
 
 RationalNum operator-(const RationalNum& left, const RationalNum& right) {
-    return RationalNum(left.numerator * right.denominator - left.denominator * right.numerator, left.denominator * right.denominator);
+    return RationalNum(left.numerator * right.denominator - left.denominator * right.numerator, left.denominator * right.denominator).simplify();
 }
 
 RationalNum operator*(const RationalNum& left, const RationalNum& right) {
-    return RationalNum(left.numerator * right.numerator, left.denominator * right.denominator);
+    return RationalNum(left.numerator * right.numerator, left.denominator * right.denominator).simplify();
 }
 
 RationalNum operator/(const RationalNum& left, const RationalNum& right) {
-    return RationalNum(left.numerator * right.denominator, left.denominator * right.numerator);
+    return RationalNum(left.numerator * right.denominator, left.denominator * right.numerator).simplify();
 }
 
 bool operator==(const RationalNum& left, const RationalNum& right) {
-    return (left.numerator == right.numerator && left.denominator == right.denominator);
+    return (left.numerator * right.denominator == right.numerator * left.denominator);
 }
 
 bool operator!=(const RationalNum& left, const RationalNum& right) {
@@ -66,30 +81,6 @@ ostream& operator<<(ostream& out, const RationalNum& obj) {
         out << "/" << obj.denominator;
     }
     return out;
-}
-
-//member function definition
-RationalNum::RationalNum() {
-    numerator = 0;
-    denominator = 1;
-}
-
-RationalNum::RationalNum(rational_t r) {
-    if (r.q == 0) {
-        cout << "[warn] Denominator is 0." << endl;
-    }
-    numerator = r.p;
-    denominator = r.q;
-    simplify();
-}
-
-RationalNum::RationalNum(int_t numerator_, int_t denominator_) {
-    if (denominator_ == 0) {
-        cout << "[warn] Denominator is 0." << endl;
-    }
-    numerator = numerator_;
-    denominator = denominator_;
-    simplify();
 }
 
 RationalNum& RationalNum::operator=(const RationalNum& obj) {
@@ -148,24 +139,6 @@ RationalNum RationalNum::operator-() const {
     return RationalNum(-numerator, denominator);
 }
 
-RationalNum::operator int_t() const { return numerator / denominator; }
-
-int_t RationalNum::getNumerator() const {
-    return numerator;
-}
-
-int_t RationalNum::getDenominator() const {
-    return denominator;
-}
-
-void RationalNum::simplify() {
-    if (denominator < 0) {
-        numerator = -numerator;
-        denominator = -denominator;
-    }
-    int_t d = absInt(gcd(numerator, denominator));
-    if (d > 1) {
-        numerator = numerator / d;
-        denominator = denominator / d;
-    }
+RationalNum::operator int_t() const {
+    return numerator / denominator;
 }

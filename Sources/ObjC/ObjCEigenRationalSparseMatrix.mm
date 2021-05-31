@@ -10,6 +10,7 @@
 #import <iostream>
 #import "Rational/Rational.hpp"
 
+using namespace std;
 using Self = ObjCEigenRationalSparseMatrix;
 using Coeff = RationalNum;
 using Matrix = Eigen::SparseMatrix<Coeff>;
