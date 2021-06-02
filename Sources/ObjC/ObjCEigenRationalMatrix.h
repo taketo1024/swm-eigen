@@ -46,18 +46,4 @@ NS_SWIFT_NAME(setValue(_:row:col:));
 
 @end
 
-@interface ObjCEigenRationalMatrix(LU)
-
-- (instancetype)getL;
-- (instancetype)getU;
-- (perm_t)getP;
-- (perm_t)getQ;
-- (int_t)rank;
-- (int_t)nullity;
-- (instancetype)image;
-- (instancetype)kernel;
-- (nullable instancetype)solve: (id)b;
-
-@end
-
 NS_ASSUME_NONNULL_END
