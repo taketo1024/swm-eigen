@@ -6,6 +6,7 @@
 //
 
 import SwmCore
+import SwmMatrixTools
 
 public protocol EigenMatrix: MatrixImpl {
     associatedtype ObjCMatrix: ObjCEigenMatrix
@@ -33,11 +34,11 @@ extension EigenMatrix {
         let matrix = ObjCMatrix.identity(rows: size.0, cols: size.1)
         return self.init(matrix)
     }
-
+    
     public var size: (rows: Int, cols: Int) {
         (objCMatrix.rows, objCMatrix.cols)
     }
-
+    
     public var isZero: Bool {
         objCMatrix.isZero()
     }
@@ -45,7 +46,7 @@ extension EigenMatrix {
     public var transposed: Self {
         .init(objCMatrix.transposed())
     }
-
+    
     public var isInvertible: Bool {
         determinant.isInvertible
     }
@@ -53,11 +54,11 @@ extension EigenMatrix {
     public var inverse: Self? {
         objCMatrix.inverse().flatMap { .init($0) }
     }
-
+    
     public func submatrix(rowRange: CountableRange<Int>,  colRange: CountableRange<Int>) -> Self {
         .init(objCMatrix.submatrix(fromRow: rowRange.startIndex, col: colRange.startIndex, width: rowRange.endIndex - rowRange.startIndex, height: colRange.endIndex - colRange.startIndex))
     }
-
+    
     public func concat(_ B: Self) -> Self {
         fatalError("Not implemented yet.")
     }
@@ -89,29 +90,21 @@ extension EigenMatrix {
     public static func ==(a: Self, b: Self) -> Bool {
         a.objCMatrix.equals(b.objCMatrix)
     }
-
+    
     public static func +(a: Self, b: Self) -> Self {
         .init(a.objCMatrix.add(b.objCMatrix))
     }
-
+    
     public static prefix func -(a: Self) -> Self {
         .init(a.objCMatrix.negate())
     }
-
+    
     public static func -(a: Self, b: Self) -> Self {
         .init(a.objCMatrix.sub(b.objCMatrix))
     }
-
+    
     public static func *(a: Self, b: Self) -> Self {
         .init(a.objCMatrix.mul(b.objCMatrix))
-    }
-    
-    public static func ⊕ (a: Self, b: Self) -> Self {
-        fatalError("Not implemented yet.")
-    }
-    
-    public static func ⊗ (a: Self, b: Self) -> Self {
-        fatalError("Not implemented yet.")
     }
 }
 
@@ -136,19 +129,19 @@ extension EigenMatrix where BaseRing == ObjCMatrix.Coeff {
             objCMatrix.setValue(newValue, row: i, col: j)
         }
     }
-
+    
     public var determinant: BaseRing {
         objCMatrix.determinant()
     }
-
+    
     public var trace: BaseRing {
         objCMatrix.trace()
     }
-
+    
     public static func *(r: BaseRing, a: Self) -> Self {
         .init(a.objCMatrix.mulLeft(r))
     }
-
+    
     public static func *(a: Self, r: BaseRing) -> Self {
         .init(a.objCMatrix.mulRight(r))
     }
@@ -182,19 +175,19 @@ extension EigenMatrix where BaseRing: CTypeConvertible, BaseRing.CType == ObjCMa
             objCMatrix.setValue(newValue.toCType, row: i, col: j)
         }
     }
-
+    
     public var determinant: BaseRing {
         BaseRing(fromCType: objCMatrix.determinant())
     }
-
+    
     public var trace: BaseRing {
         BaseRing(fromCType: objCMatrix.trace())
     }
-
+    
     public static func *(r: BaseRing, a: Self) -> Self {
         .init(a.objCMatrix.mulLeft(r.toCType))
     }
-
+    
     public static func *(a: Self, r: BaseRing) -> Self {
         .init(a.objCMatrix.mulRight(r.toCType))
     }
@@ -204,5 +197,23 @@ extension EigenMatrix where BaseRing: CTypeConvertible, BaseRing.CType == ObjCMa
         var array = [BaseRing.CType](repeating: BaseRing.zero.toCType, count: l)
         objCMatrix.serialize(into: &array)
         return array.map{ BaseRing(fromCType: $0) }
+    }
+}
+
+extension EigenMatrix where ObjCMatrix: ObjCEigenMatrix_LU {
+    public static func solveLowerTriangular(_ L: Self, _ b: Self) -> Self {
+        assert(L.isSquare)
+        assert(L.isLowerTriangular)
+        assert(L.hasInvertibleDiagonal)
+        assert(L.size.rows == b.size.rows)
+        return .init(ObjCMatrix.solveLowerTriangular(L.objCMatrix, b.objCMatrix))
+    }
+    
+    public static func solveUpperTriangular(_ U: Self, _ b: Self) -> Self {
+        assert(U.isSquare)
+        assert(U.isUpperTriangular)
+        assert(U.hasInvertibleDiagonal)
+        assert(U.size.rows == b.size.rows)
+        return .init(ObjCMatrix.solveUpperTriangular(U.objCMatrix, b.objCMatrix))
     }
 }

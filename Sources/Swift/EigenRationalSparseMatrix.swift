@@ -6,8 +6,9 @@
 //
 
 import SwmCore
+import SwmMatrixTools
 
-public struct EigenRationalSparseMatrix: EigenMatrix, SparseMatrixImpl {
+public struct EigenRationalSparseMatrix: EigenMatrix, SparseMatrixImpl, LUFactorizable {
     public typealias ObjCMatrix = ObjCEigenRationalSparseMatrix
     public typealias BaseRing = RationalNumber
 
@@ -47,6 +48,6 @@ public struct EigenRationalSparseMatrix: EigenMatrix, SparseMatrixImpl {
     }
 }
 
-extension ObjCEigenRationalSparseMatrix: ObjCEigenMatrix {
+extension ObjCEigenRationalSparseMatrix: ObjCEigenMatrix_LU {
     public typealias Coeff = RationalNumber.CType
 }

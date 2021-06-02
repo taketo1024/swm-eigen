@@ -42,3 +42,8 @@ public protocol ObjCEigenMatrix: AnyObject {
     
     func serialize(into array: UnsafeMutablePointer<Coeff>)
 }
+
+public protocol ObjCEigenMatrix_LU: ObjCEigenMatrix {
+    static func solveLowerTriangular(_ L: Any, _ b: Any) -> Self
+    static func solveUpperTriangular(_ U: Any, _ b: Any) -> Self
+}

@@ -11,12 +11,13 @@
 #import "Rational/Rational.hpp"
 
 using namespace std;
+
 using Self = ObjCEigenRationalSparseMatrix;
 using Coeff = RationalNum;
 using Matrix = Eigen::SparseMatrix<Coeff>;
 using Triplet = Eigen::Triplet<Coeff>;
 using Map = Eigen::Map<Matrix>;
-using SparseLU = Eigen::SparseLU<Matrix, Eigen::COLAMDOrdering<int> >;
+using DenseMatrix = Eigen::Matrix<Coeff, Eigen::Dynamic, Eigen::Dynamic>;
 
 @interface ObjCEigenRationalSparseMatrix ()
 
@@ -113,31 +114,31 @@ using SparseLU = Eigen::SparseLU<Matrix, Eigen::COLAMDOrdering<int> >;
     @throw [NSException exceptionWithName:@"Not yet implemented." reason:nil userInfo:nil];
 }
 
-- (bool)equals:(ObjCEigenRationalSparseMatrix *)other {
+- (bool)equals:(Self *)other {
     return _matrix.isApprox(other.matrix);
 }
 
-- (ObjCEigenRationalSparseMatrix *)add:(ObjCEigenRationalSparseMatrix *)other {
+- (Self *)add:(Self *)other {
     return [[ObjCEigenRationalSparseMatrix alloc]initWithMatrix:_matrix + other.matrix];
 }
 
-- (ObjCEigenRationalSparseMatrix *)negate {
+- (Self *)negate {
     return [[ObjCEigenRationalSparseMatrix alloc]initWithMatrix:-_matrix];
 }
 
-- (ObjCEigenRationalSparseMatrix *)sub:(ObjCEigenRationalSparseMatrix *)other {
+- (Self *)sub:(Self *)other {
     return [[ObjCEigenRationalSparseMatrix alloc]initWithMatrix:_matrix - other.matrix];
 }
 
-- (ObjCEigenRationalSparseMatrix *)mulLeft:(rational_t)r {
+- (Self *)mulLeft:(rational_t)r {
     return [[ObjCEigenRationalSparseMatrix alloc]initWithMatrix:RationalNum(r) * _matrix];
 }
 
-- (ObjCEigenRationalSparseMatrix *)mulRight:(rational_t)r {
+- (Self *)mulRight:(rational_t)r {
     return [[ObjCEigenRationalSparseMatrix alloc]initWithMatrix:_matrix * RationalNum(r)];
 }
 
-- (ObjCEigenRationalSparseMatrix *)mul:(ObjCEigenRationalSparseMatrix *)other {
+- (Self *)mul:(Self *)other {
     return [[ObjCEigenRationalSparseMatrix alloc]initWithMatrix:_matrix * other.matrix];
 }
 
@@ -162,6 +163,22 @@ using SparseLU = Eigen::SparseLU<Matrix, Eigen::COLAMDOrdering<int> >;
             array[idx] = to_rational_t(it.value());
         }
     }
+}
+
++ (instancetype)solveLowerTriangular:(Self *)L :(Self *)b {
+    auto L_ = L.matrix;
+    auto b_ = DenseMatrix(b.matrix);
+    auto x_ = L_.triangularView<Eigen::Lower>().solve(b_);
+    auto x = x_.sparseView();
+    return [[ObjCEigenRationalSparseMatrix alloc] initWithMatrix:x];
+}
+
++ (instancetype)solveUpperTriangular:(Self *)U :(Self *)b {
+    auto U_ = U.matrix;
+    auto b_ = DenseMatrix(b.matrix);
+    auto x_ = U_.triangularView<Eigen::Upper>().solve(b_);
+    auto x = x_.sparseView();
+    return [[ObjCEigenRationalSparseMatrix alloc] initWithMatrix:x];
 }
 
 @end
