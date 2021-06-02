@@ -29,7 +29,11 @@ NS_SWIFT_NAME(setValue(_:row:col:));
 
 - (double)determinant;
 - (double)trace;
+
 - (instancetype)submatrixFromRow:(int_t)i col:(int_t)j width:(int_t)w height:(int_t)h;
+- (instancetype)concat:(id)other;
+- (instancetype)stack:(id)other;
+
 - (instancetype)permuteRows:(perm_t)p;
 - (instancetype)permuteCols:(perm_t)p;
 

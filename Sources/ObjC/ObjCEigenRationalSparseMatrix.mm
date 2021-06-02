@@ -43,14 +43,14 @@ using DenseMatrix = Eigen::Matrix<Coeff, Eigen::Dynamic, Eigen::Dynamic>;
         v.push_back(t);
     }
     
-    auto matrix = Matrix(rows, cols);
+    Matrix matrix = Matrix(rows, cols);
     matrix.setFromTriplets(v.begin(), v.end());
     return [self initWithMatrix:matrix];
 }
 
 - (instancetype)copy {
     Matrix copy = _matrix;
-    return [[ObjCEigenRationalSparseMatrix alloc] initWithMatrix:copy];
+    return [[Self alloc] initWithMatrix:copy];
 }
 
 - (int_t)rows {
@@ -62,15 +62,15 @@ using DenseMatrix = Eigen::Matrix<Coeff, Eigen::Dynamic, Eigen::Dynamic>;
 }
 
 + (instancetype)matrixWithZeros:(int_t)rows cols:(int_t)cols {
-    auto matrix = Matrix(rows, cols);
+    Matrix matrix = Matrix(rows, cols);
     matrix.setZero();
-    return [[ObjCEigenRationalSparseMatrix alloc] initWithMatrix:matrix];
+    return [[Self alloc] initWithMatrix:matrix];
 }
 
 + (instancetype)matrixWithIdentity:(int_t)rows cols:(int_t)cols {
-    auto matrix = Matrix(rows, cols);
+    Matrix matrix = Matrix(rows, cols);
     matrix.setIdentity();
-    return [[ObjCEigenRationalSparseMatrix alloc] initWithMatrix:matrix];
+    return [[Self alloc] initWithMatrix:matrix];
 }
 
 - (rational_t)valueAtRow:(int_t)row col:(int_t)col {
@@ -87,7 +87,7 @@ using DenseMatrix = Eigen::Matrix<Coeff, Eigen::Dynamic, Eigen::Dynamic>;
 }
 
 - (instancetype)transposed {
-    return [[ObjCEigenRationalSparseMatrix alloc] initWithMatrix:_matrix.transpose()];
+    return [[Self alloc] initWithMatrix:_matrix.transpose()];
 }
 
 - (rational_t)determinant {
@@ -102,16 +102,62 @@ using DenseMatrix = Eigen::Matrix<Coeff, Eigen::Dynamic, Eigen::Dynamic>;
     @throw [NSException exceptionWithName:@"Unsupported method call" reason:nil userInfo:nil];
 }
 
--(instancetype)submatrixFromRow:(int_t)i col:(int_t)j width:(int_t)w height:(int_t)h {
-    return [[ObjCEigenRationalSparseMatrix alloc] initWithMatrix:_matrix.block(i, j, w, h)];
+- (instancetype)submatrixFromRow:(int_t)i col:(int_t)j width:(int_t)w height:(int_t)h {
+    return [[Self alloc] initWithMatrix:_matrix.block(i, j, w, h)];
+}
+
+- (instancetype)concat:(Self *)other {
+    Matrix C(self.rows, self.cols + other.cols);
+    C.leftCols(self.cols) = self.matrix;
+    C.rightCols(other.cols) = other.matrix;
+    return [[Self alloc] initWithMatrix:C];
+}
+
+- (instancetype)stack:(Self *)other {
+    // must recreate matrix.
+    int_t n1 = self.rows;
+    int_t n2 = other.rows;
+    int_t m = self.cols;
+    
+    Matrix C(n1 + n2, m);
+    C.setZero();
+    
+    Matrix matrix2 = other.matrix; // without this, we get memory problem...
+
+    vector<Triplet> triplets;
+    triplets.reserve(self.countNonZeros + other.countNonZeros);
+    
+    for (int k = 0; k < _matrix.outerSize(); ++k) {
+        for (Matrix::InnerIterator it(_matrix, k); it; ++it) {
+            triplets.push_back(Triplet(it.row(), it.col(), it.value()));
+        }
+    }
+    for (int k = 0; k < matrix2.outerSize(); ++k) {
+        for (Matrix::InnerIterator it(matrix2, k); it; ++it) {
+            triplets.push_back(Triplet(n1 + it.row(), it.col(), it.value()));
+        }
+    }
+    
+    C.setFromTriplets(triplets.begin(), triplets.end());
+    return [[Self alloc] initWithMatrix:C];
 }
 
 - (instancetype)permuteRows:(perm_t)p {
-    @throw [NSException exceptionWithName:@"Not yet implemented." reason:nil userInfo:nil];
+    Eigen::VectorXi indices(p.length);
+    for(int_t i = 0; i < p.length; ++i) {
+        indices[i] = p.indices[i];
+    }
+    auto P = Eigen::PermutationMatrix<Eigen::Dynamic>(indices);
+    return [[Self alloc] initWithMatrix:P * _matrix];
 }
 
 - (instancetype)permuteCols:(perm_t)p {
-    @throw [NSException exceptionWithName:@"Not yet implemented." reason:nil userInfo:nil];
+    Eigen::VectorXi indices(p.length);
+    for(int_t i = 0; i < p.length; ++i) {
+        indices[i] = p.indices[i];
+    }
+    auto P = Eigen::PermutationMatrix<Eigen::Dynamic>(indices);
+    return [[Self alloc] initWithMatrix:_matrix * P.transpose()];
 }
 
 - (bool)equals:(Self *)other {
@@ -119,27 +165,27 @@ using DenseMatrix = Eigen::Matrix<Coeff, Eigen::Dynamic, Eigen::Dynamic>;
 }
 
 - (Self *)add:(Self *)other {
-    return [[ObjCEigenRationalSparseMatrix alloc]initWithMatrix:_matrix + other.matrix];
+    return [[Self alloc]initWithMatrix:_matrix + other.matrix];
 }
 
 - (Self *)negate {
-    return [[ObjCEigenRationalSparseMatrix alloc]initWithMatrix:-_matrix];
+    return [[Self alloc]initWithMatrix:-_matrix];
 }
 
 - (Self *)sub:(Self *)other {
-    return [[ObjCEigenRationalSparseMatrix alloc]initWithMatrix:_matrix - other.matrix];
+    return [[Self alloc]initWithMatrix:_matrix - other.matrix];
 }
 
 - (Self *)mulLeft:(rational_t)r {
-    return [[ObjCEigenRationalSparseMatrix alloc]initWithMatrix:RationalNum(r) * _matrix];
+    return [[Self alloc]initWithMatrix:RationalNum(r) * _matrix];
 }
 
 - (Self *)mulRight:(rational_t)r {
-    return [[ObjCEigenRationalSparseMatrix alloc]initWithMatrix:_matrix * RationalNum(r)];
+    return [[Self alloc]initWithMatrix:_matrix * RationalNum(r)];
 }
 
 - (Self *)mul:(Self *)other {
-    return [[ObjCEigenRationalSparseMatrix alloc]initWithMatrix:_matrix * other.matrix];
+    return [[Self alloc]initWithMatrix:_matrix * other.matrix];
 }
 
 - (int_t)countNonZeros {
@@ -166,19 +212,17 @@ using DenseMatrix = Eigen::Matrix<Coeff, Eigen::Dynamic, Eigen::Dynamic>;
 }
 
 + (instancetype)solveLowerTriangular:(Self *)L :(Self *)b {
-    auto L_ = L.matrix;
-    auto b_ = DenseMatrix(b.matrix);
-    auto x_ = L_.triangularView<Eigen::Lower>().solve(b_);
-    auto x = x_.sparseView();
-    return [[ObjCEigenRationalSparseMatrix alloc] initWithMatrix:x];
+    DenseMatrix b_, x_;
+    b_ = b.matrix;
+    x_ = L.matrix.triangularView<Eigen::Lower>().solve(b_);
+    return [[Self alloc] initWithMatrix:x_.sparseView()];
 }
 
 + (instancetype)solveUpperTriangular:(Self *)U :(Self *)b {
-    auto U_ = U.matrix;
-    auto b_ = DenseMatrix(b.matrix);
-    auto x_ = U_.triangularView<Eigen::Upper>().solve(b_);
-    auto x = x_.sparseView();
-    return [[ObjCEigenRationalSparseMatrix alloc] initWithMatrix:x];
+    DenseMatrix b_, x_;
+    b_ = b.matrix;
+    x_ = U.matrix.triangularView<Eigen::Upper>().solve(b_);
+    return [[Self alloc] initWithMatrix:x_.sparseView()];
 }
 
 @end

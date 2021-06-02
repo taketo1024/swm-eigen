@@ -60,15 +60,15 @@ extension EigenMatrix {
     }
     
     public func concat(_ B: Self) -> Self {
-        fatalError("Not implemented yet.")
+        .init(objCMatrix.concat(B.objCMatrix))
     }
     
     public func stack(_ B: Self) -> Self {
-        fatalError("Not implemented yet.")
+        .init(objCMatrix.stack(B.objCMatrix))
     }
     
     public func permute(rowsBy p: Permutation<anySize>, colsBy q: Permutation<anySize>) -> Self {
-        fatalError("Not implemented yet.")
+        permuteRows(by: p).permuteCols(by: q)
     }
     
     public func permuteRows(by σ: Permutation<anySize>) -> Self {

@@ -220,6 +220,27 @@ class EigenRationalSparseMatrixTests: XCTestCase {
         XCTAssertEqual(b[0, 0], 10)
     }
     
+    func testConcat() {
+        let a: M2 = [1,2,3,4]
+        let b: M2 = [5,6,7,8]
+        let c = a.concat(b).as(M<_2, _4>.self)
+        XCTAssertEqual(c, [1,2,5,6,3,4,7,8])
+    }
+    
+    func testStack() {
+        let a: M2 = [1,2,3,4]
+        let b: M2 = [5,6,7,8]
+        let c = a.stack(b).as(M<_4, _2>.self)
+        XCTAssertEqual(c, [1,2,3,4,5,6,7,8])
+    }
+    
+    func testStack2() {
+        let a: M2 = [1,2,3,4]
+        let b: M2 = [0,0,0,0]
+        let c = a.stack(b).as(M<_4, _2>.self)
+        XCTAssertEqual(c, [1,2,3,4,0,0,0,0])
+    }
+    
     func testSolveLowerTriangular() {
         let L: M<_4, _4> = [
             1, 0, 0, 0,

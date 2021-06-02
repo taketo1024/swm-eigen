@@ -29,6 +29,9 @@ public protocol ObjCEigenMatrix: AnyObject {
     func trace() -> Coeff
     
     func submatrix(fromRow i: Int, col j: Int, width w: Int, height h: Int) -> Self
+    func concat(_ other: Any) -> Self
+    func stack(_ other: Any) -> Self
+    
     func permuteRows(_ p: perm_t) -> Self
     func permuteCols(_ p: perm_t) -> Self
 
