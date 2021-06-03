@@ -68,7 +68,7 @@ using Map = Eigen::Map<Matrix>;
 }
 
 - (Coeff)determinant {
-    auto det = _matrix.cast<RationalNum>().determinant();
+    RationalNum det = _matrix.cast<RationalNum>().determinant();
     if (det.getDenominator() != 1) {
         @throw [NSException exceptionWithName:@"Runtime Exception" reason:@"invalid calculation result." userInfo:nil];
     }
@@ -80,7 +80,8 @@ using Map = Eigen::Map<Matrix>;
 }
 
 - (instancetype)inverse {
-    auto rmat = _matrix.cast<RationalNum>();
+    using RMatrix = Eigen::Matrix<RationalNum, Eigen::Dynamic, Eigen::Dynamic>;
+    RMatrix rmat = _matrix.cast<RationalNum>();
     if (rmat.determinant() != 0) {
         return [[Self alloc] initWithMatrix:rmat.inverse().cast<int_t>()];
     } else {
@@ -90,6 +91,20 @@ using Map = Eigen::Map<Matrix>;
 
 -(instancetype)submatrixFromRow:(int_t)i col:(int_t)j width:(int_t)w height:(int_t)h {
     return [[Self alloc] initWithMatrix:_matrix.block(i, j, w, h)];
+}
+
+- (instancetype)concat:(Self *)other {
+    Matrix C(self.rows, self.cols + other.cols);
+    C.leftCols(self.cols) = self.matrix;
+    C.rightCols(other.cols) = other.matrix;
+    return [[Self alloc] initWithMatrix:C];
+}
+
+- (instancetype)stack:(Self *)other {
+    Matrix C(self.rows + other.rows, self.cols);
+    C.topRows(self.rows) = self.matrix;
+    C.bottomRows(other.rows) = other.matrix;
+    return [[Self alloc] initWithMatrix:C];
 }
 
 - (instancetype)permuteRows:(perm_t)p {

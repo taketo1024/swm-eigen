@@ -312,6 +312,6 @@ class EigenRationalSparseMatrixTests: XCTestCase {
         ]
         let b: M<_4, _1> = [65, 3, 18, 17]
         let x = M.solveUpperTrapezoidal(U, b)
-        print(x)
+        XCTAssertEqual(U * x, b)
     }
 }

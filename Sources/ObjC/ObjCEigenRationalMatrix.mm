@@ -88,12 +88,26 @@ using LU = Eigen::FullPivLU<Matrix>;
     return [[Self alloc] initWithMatrix:_matrix.block(i, j, w, h)];
 }
 
+- (instancetype)concat:(Self *)other {
+    Matrix C(self.rows, self.cols + other.cols);
+    C.leftCols(self.cols) = self.matrix;
+    C.rightCols(other.cols) = other.matrix;
+    return [[Self alloc] initWithMatrix:C];
+}
+
+- (instancetype)stack:(Self *)other {
+    Matrix C(self.rows + other.rows, self.cols);
+    C.topRows(self.rows) = self.matrix;
+    C.bottomRows(other.rows) = other.matrix;
+    return [[Self alloc] initWithMatrix:C];
+}
+
 - (instancetype)permuteRows:(perm_t)p {
     Eigen::VectorXi indices(p.length);
     for(int_t i = 0; i < p.length; ++i) {
         indices[i] = p.indices[i];
     }
-    auto P = Eigen::PermutationMatrix<Eigen::Dynamic>(indices);
+    Eigen::PermutationMatrix<Eigen::Dynamic> P(indices);
     return [[Self alloc] initWithMatrix:P * _matrix];
 }
 
@@ -102,7 +116,7 @@ using LU = Eigen::FullPivLU<Matrix>;
     for(int_t i = 0; i < p.length; ++i) {
         indices[i] = p.indices[i];
     }
-    auto P = Eigen::PermutationMatrix<Eigen::Dynamic>(indices);
+    Eigen::PermutationMatrix<Eigen::Dynamic> P(indices);
     return [[Self alloc] initWithMatrix:_matrix * P.transpose()];
 }
 

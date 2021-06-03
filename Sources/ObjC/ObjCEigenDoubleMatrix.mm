@@ -86,6 +86,20 @@ using Map = Eigen::Map<Matrix>;
     return [[Self alloc] initWithMatrix:_matrix.block(i, j, w, h)];
 }
 
+- (instancetype)concat:(Self *)other {
+    Matrix C(self.rows, self.cols + other.cols);
+    C.leftCols(self.cols) = self.matrix;
+    C.rightCols(other.cols) = other.matrix;
+    return [[Self alloc] initWithMatrix:C];
+}
+
+- (instancetype)stack:(Self *)other {
+    Matrix C(self.rows + other.rows, self.cols);
+    C.topRows(self.rows) = self.matrix;
+    C.bottomRows(other.rows) = other.matrix;
+    return [[Self alloc] initWithMatrix:C];
+}
+
 - (instancetype)permuteRows:(perm_t)p {
     @throw [NSException exceptionWithName:@"Not yet implemented." reason:nil userInfo:nil];
 }
