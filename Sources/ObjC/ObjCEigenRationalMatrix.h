@@ -47,6 +47,9 @@ NS_SWIFT_NAME(setValue(_:row:col:));
 
 - (void)serializeInto:(rational_t *)array;
 
++ (instancetype)solveLowerTriangular:(id)L :(id)b;
++ (instancetype)solveUpperTriangular:(id)U :(id)b;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -156,4 +156,14 @@ using LU = Eigen::FullPivLU<Matrix>;
     }
 }
 
++ (instancetype)solveLowerTriangular:(Self *)L :(Self *)b {
+    Matrix x = L.matrix.triangularView<Eigen::Lower>().solve(b.matrix);
+    return [[Self alloc] initWithMatrix:x];
+}
+
++ (instancetype)solveUpperTriangular:(Self *)U :(Self *)b {
+    Matrix x = U.matrix.triangularView<Eigen::Upper>().solve(b.matrix);
+    return [[Self alloc] initWithMatrix:x];
+}
+
 @end

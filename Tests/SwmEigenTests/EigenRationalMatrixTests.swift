@@ -219,4 +219,98 @@ class EigenRationalMatrixTests: XCTestCase {
         XCTAssertEqual(a[0, 0], 1)
         XCTAssertEqual(b[0, 0], 10)
     }
-}
+
+    func testConcat() {
+        let a: M2 = [1,2,3,4]
+        let b: M2 = [5,6,7,8]
+        let c = a.concat(b).as(M<_2, _4>.self)
+        XCTAssertEqual(c, [1,2,5,6,3,4,7,8])
+    }
+    
+    func testStack() {
+        let a: M2 = [1,2,3,4]
+        let b: M2 = [5,6,7,8]
+        let c = a.stack(b).as(M<_4, _2>.self)
+        XCTAssertEqual(c, [1,2,3,4,5,6,7,8])
+    }
+    
+    func testStack2() {
+        let a: M2 = [1,2,3,4]
+        let b: M2 = [0,0,0,0]
+        let c = a.stack(b).as(M<_4, _2>.self)
+        XCTAssertEqual(c, [1,2,3,4,0,0,0,0])
+    }
+    
+    func testSolveLowerTriangular() {
+        let L: M<_4, _4> = [
+            1, 0, 0, 0,
+            1, 1, 0, 0,
+            -1,0, 1, 0,
+            0, 2, 0, -1
+        ]
+        let b: M<_4, _1> = [1, 2, 1, 1]
+        let x = M.solveLowerTriangular(L, b)
+        XCTAssertEqual(L * x, b)
+    }
+    
+    func testSolveLowerTrapezoidal() {
+        let L: M<_6, _4> = [
+            1, 0, 0, 0,
+            1, 1, 0, 0,
+            -1,0, 1, 0,
+            0, 2, 0, -1,
+            1, -1,2, 3,
+            2, 0, 0, 1
+        ]
+        let b: M<_6, _1> = [1, 2, 1, 1, 7, 3]
+        let x = M.solveLowerTrapezoidal(L, b)
+        
+        if let x = x {
+            XCTAssertEqual(L * x, b)
+        } else {
+            XCTFail()
+        }
+    }
+
+    func testSolveLowerTrapezoidal_noSolution() {
+        let L: M<_6, _4> = [
+            1, 0, 0, 0,
+            1, 1, 0, 0,
+            -1,0, 1, 0,
+            0, 2, 0, -1,
+            1, -1,2, 3,
+            2, 0, 0, 1
+        ]
+        let b: M<_6, _1> = [1, 2, 1, 1, 7, 5]
+        let x = M.solveLowerTrapezoidal(L, b)
+        
+        if let _ = x {
+            XCTFail()
+        } else {
+            // OK
+        }
+    }
+
+    func testSolveUpperTriangular() {
+        let U: M<_4, _4> = [
+            1, 2, 3, 4,
+            0,-1, 0, 2,
+            0 ,0, 1, 0,
+            0, 0, 0, -1,
+        ]
+        let b: M<_4, _1> = [65, 3, 18, 17]
+        let x = M.solveUpperTriangular(U, b)
+        XCTAssertEqual(U * x, b)
+    }
+
+    func testSolveUpperTrapezoidal() {
+        let U: M<_4, _6> = [
+            1, 2, 3, 4, 5, 6,
+            0,-1, 0, 2, 0, 1,
+            0 ,0, 1, 0, 2, 1,
+            0, 0, 0, -1,3, -1
+        ]
+        let b: M<_4, _1> = [65, 3, 18, 17]
+        let x = M.solveUpperTrapezoidal(U, b)
+        XCTAssertEqual(U * x, b)
+    }}
