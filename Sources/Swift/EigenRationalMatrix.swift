@@ -17,8 +17,13 @@ public struct EigenRationalMatrix: EigenMatrix, LUFactorizable {
     public init(_ objCMatrix: ObjCMatrix) {
         self.objCMatrix = objCMatrix
     }
+    
+    // overrides default impl.
+    public func LUfactorize() -> (P: Permutation<anySize>, Q: Permutation<anySize>, L: Self, U: Self) {
+        LUfactorize_native()
+    }
 }
 
-extension ObjCEigenRationalMatrix: ObjCEigenMatrix_LU {
+extension ObjCEigenRationalMatrix: ObjCEigenMatrix_LU, ObjCEigenMatrix_nativeLU {
     public typealias Coeff = RationalNumber.CType
 }

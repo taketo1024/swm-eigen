@@ -313,4 +313,21 @@ class EigenRationalMatrixTests: XCTestCase {
         let b: M<_4, _1> = [65, 3, 18, 17]
         let x = M.solveUpperTrapezoidal(U, b)
         XCTAssertEqual(U * x, b)
-    }}
+    }
+    
+    func testLUFactorize() {
+        let A: M<_5, _5> = [
+            1, 0, 1, 0, 2,
+            0, 0, 0, 3, 0,
+            0, 0, 2, 0, 3,
+            1, 0, 0, 1, 0,
+            0, 0, 1, 0, 1,
+        ]
+        let e = A.LUfactorize()
+        let (P, Q, L, U) = e.PQLU
+        
+        XCTAssertTrue(L.isLowerTriangular)
+        XCTAssertTrue(U.isUpperTriangular)
+        XCTAssertEqual(A.permute(rowsBy: P, colsBy: Q), L * U)
+    }
+}

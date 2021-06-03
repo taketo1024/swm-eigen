@@ -49,6 +49,7 @@ NS_SWIFT_NAME(setValue(_:row:col:));
 
 + (instancetype)solveLowerTriangular:(id)L :(id)b;
 + (instancetype)solveUpperTriangular:(id)U :(id)b;
+- (NSDictionary *)lufactorize;
 
 @end
 

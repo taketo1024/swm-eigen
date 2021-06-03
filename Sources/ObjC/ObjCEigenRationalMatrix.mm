@@ -64,6 +64,10 @@ using LU = Eigen::FullPivLU<Matrix>;
     return _matrix.isZero(0);
 }
 
+- (bool)isZeroSize {
+    return (self.rows * self.cols == 0);
+}
+
 - (instancetype)transposed {
     return [[Self alloc] initWithMatrix:_matrix.transpose()];
 }
@@ -164,6 +168,55 @@ using LU = Eigen::FullPivLU<Matrix>;
 + (instancetype)solveUpperTriangular:(Self *)U :(Self *)b {
     Matrix x = U.matrix.triangularView<Eigen::Upper>().solve(b.matrix);
     return [[Self alloc] initWithMatrix:x];
+}
+
+- (NSDictionary *)lufactorize {
+    int_t n = self.rows;
+    int_t m = self.cols;
+    
+    // P, Q must be freed by the caller.
+    perm_t P = init_perm(n);
+    perm_t Q = init_perm(m);
+    Self *L;
+    Self *U;
+
+    if(self.isZeroSize) {
+        L = [Self matrixWithZeros:n cols:0];
+        U = [Self matrixWithZeros:0 cols:m];
+    } else {
+        using LU = Eigen::FullPivLU<Matrix>;
+        LU lu(_matrix);
+        int_t r = lu.rank();
+        
+        // make P
+        LU::PermutationPType p = lu.permutationP();
+        for(int_t i = 0; i < n; ++i) {
+            P.indices[i] = p.indices()[i];
+        }
+        
+        // make Q
+        LU::PermutationQType q = lu.permutationQ();
+        for(int_t i = 0; i < m; ++i) {
+            Q.indices[i] = q.indices()[i];
+        }
+        
+        // make L
+        Matrix l = Matrix::Identity(n, r);
+        l.triangularView<Eigen::StrictlyLower>() = lu.matrixLU().block(0, 0, n, r);
+        L = [[Self alloc] initWithMatrix:l];
+        
+        // make U
+        Matrix u = Matrix::Zero(r, m);
+        u.triangularView<Eigen::Upper>() = lu.matrixLU().block(0, 0, r, m);
+        U = [[Self alloc] initWithMatrix:u];
+    }
+    
+    return @{
+        @"P": [NSValue valueWithBytes:&P objCType:@encode(perm_t)],
+        @"Q": [NSValue valueWithBytes:&Q objCType:@encode(perm_t)],
+        @"L": L,
+        @"U": U
+    };
 }
 
 @end

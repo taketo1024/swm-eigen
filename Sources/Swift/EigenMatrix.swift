@@ -217,3 +217,23 @@ extension EigenMatrix where ObjCMatrix: ObjCEigenMatrix_LU {
         return .init(ObjCMatrix.solveUpperTriangular(U.objCMatrix, b.objCMatrix))
     }
 }
+
+extension EigenMatrix where ObjCMatrix: ObjCEigenMatrix_nativeLU {
+    public func LUfactorize_native() -> (P: Permutation<anySize>, Q: Permutation<anySize>, L: Self, U: Self) {
+        
+        func getPermutation(_ rawValue: NSValue) -> Permutation<anySize> {
+            let pPtr = UnsafeMutablePointer<perm_t>.allocate(capacity: 1)
+            rawValue.getValue(pPtr)
+            defer { free_perm(pPtr.pointee) }
+            return .init(fromCType: pPtr.pointee)
+        }
+        
+        let result = objCMatrix.lufactorize()
+        let P = getPermutation(result["P"]! as! NSValue)
+        let Q = getPermutation(result["Q"]! as! NSValue).inverse!
+        let L = Self( result["L"]! as! ObjCMatrix )
+        let U = Self( result["U"]! as! ObjCMatrix )
+        
+        return (P, Q, L, U)
+    }
+}

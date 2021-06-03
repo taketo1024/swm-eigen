@@ -50,3 +50,7 @@ public protocol ObjCEigenMatrix_LU: ObjCEigenMatrix {
     static func solveLowerTriangular(_ L: Any, _ b: Any) -> Self
     static func solveUpperTriangular(_ U: Any, _ b: Any) -> Self
 }
+
+public protocol ObjCEigenMatrix_nativeLU: ObjCEigenMatrix {
+    func lufactorize() -> [AnyHashable : Any]
+}
