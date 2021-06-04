@@ -3,27 +3,47 @@
 import PackageDescription
 
 let package = Package(
-    name: "SwiftyEigen",
+    name: "swm-eigen",
     products: [
         .library(
-            name: "SwiftyEigen",
-            targets: ["ObjCEigen", "SwiftyEigen"]
+            name: "SwmEigen",
+            targets: ["SwmEigen"]
         )
     ],
-    dependencies: [],
+    dependencies: [
+        .package(
+            url: "https://github.com/taketo1024/swm-core.git",
+            from: "1.2.1"
+//            path: "../swm-core/"
+        ),
+        .package(
+            url: "https://github.com/taketo1024/swm-matrix-tools.git",
+            from: "1.1.1"
+//            path: "../swm-matrix-tools/"
+        )
+    ],
     targets: [
         .target(
             name: "ObjCEigen",
             path: "Sources/ObjC",
             cxxSettings: [
-                .headerSearchPath("../CPP/"),
-                .define("EIGEN_MPL2_ONLY")
+                .headerSearchPath("../Eigen/"),
+                .define("EIGEN_MPL2_ONLY"),
+                .define("EIGEN_NO_DEBUG"),
             ]
         ),
         .target(
-            name: "SwiftyEigen",
-            dependencies: ["ObjCEigen"],
+            name: "SwmEigen",
+            dependencies: [
+                "ObjCEigen",
+                .product(name: "SwmCore", package: "swm-core"),
+                .product(name: "SwmMatrixTools", package: "swm-matrix-tools")
+            ],
             path: "Sources/Swift"
-        )
+        ),
+        .testTarget(
+            name: "SwmEigenTests",
+            dependencies: ["SwmEigen"]
+        ),
     ]
 )
