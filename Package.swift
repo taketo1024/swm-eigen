@@ -45,5 +45,6 @@ let package = Package(
             name: "SwmEigenTests",
             dependencies: ["SwmEigen"]
         ),
-    ]
+    ],
+	cxxLanguageStandard: .cxx11
 )
