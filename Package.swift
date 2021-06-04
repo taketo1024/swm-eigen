@@ -3,20 +3,25 @@
 import PackageDescription
 
 let package = Package(
-    name: "SwiftyEigen",
+    name: "swm-eigen",
     products: [
         .library(
-            name: "SwiftyEigen",
-            targets: ["ObjCEigen", "SwiftyEigen"]
+            name: "SwmEigen",
+            targets: ["SwmEigen"]
         )
     ],
     dependencies: [
-	    .package(
-            name:"SwiftyMath",
-            url: "../SwiftyMath/",
-			.branch("matrix-improve")
+        .package(
+            url: "https://github.com/taketo1024/swm-core.git",
+            from: "1.2.1"
+//            path: "../swm-core/"
+        ),
+        .package(
+            url: "https://github.com/taketo1024/swm-matrix-tools.git",
+            from: "1.1.1"
+//            path: "../swm-matrix-tools/"
         )
-	],
+    ],
     targets: [
         .target(
             name: "ObjCEigen",
@@ -28,18 +33,17 @@ let package = Package(
             ]
         ),
         .target(
-            name: "SwiftyEigen",
-            dependencies: ["ObjCEigen", "SwiftyMath"],
+            name: "SwmEigen",
+            dependencies: [
+                "ObjCEigen",
+                .product(name: "SwmCore", package: "swm-core"),
+                .product(name: "SwmMatrixTools", package: "swm-matrix-tools")
+            ],
             path: "Sources/Swift"
         ),
-        .target(
-            name: "SwiftyEigen-Sample",
-            dependencies: ["SwiftyEigen", "SwiftyMath"],
-            path: "Sources/Sample"
-        ),
         .testTarget(
-            name: "SwiftyEigenTests",
-            dependencies: ["SwiftyEigen", "SwiftyMath"]
+            name: "SwmEigenTests",
+            dependencies: ["SwmEigen"]
         ),
     ]
 )
