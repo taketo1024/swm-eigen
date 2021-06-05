@@ -87,6 +87,13 @@ extension EigenMatrix {
         return .init(objCMatrix.permuteCols(p))
     }
     
+    public var nonZeroEntries: AnySequence<MatrixEntry<BaseRing>> {
+        let m = size.cols
+        return AnySequence(serialize().enumerated().compactMap { (idx, a) in
+            a.isZero ? nil : (idx / m, idx % m, a)
+        })
+    }
+    
     public static func ==(a: Self, b: Self) -> Bool {
         a.objCMatrix.equals(b.objCMatrix)
     }

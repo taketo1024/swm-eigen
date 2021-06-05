@@ -4,6 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "swm-eigen",
+    platforms: [.macOS(.v10_10)],
     products: [
         .library(
             name: "SwmEigen",
@@ -13,12 +14,12 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/taketo1024/swm-core.git",
-            from: "1.2.1"
+            from: "1.2.2"
 //            path: "../swm-core/"
         ),
         .package(
             url: "https://github.com/taketo1024/swm-matrix-tools.git",
-            from: "1.1.1"
+            from: "1.1.2"
 //            path: "../swm-matrix-tools/"
         )
     ],
