@@ -9,5 +9,6 @@
 #define Include_h
 
 #include "../basic.h"
+#include "../eigen_rat_s.h"
 
 #endif /* Header_h */
