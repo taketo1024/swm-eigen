@@ -6,6 +6,7 @@
 //
 
 import SwmCore
+import CEigenBridge
 
 public protocol CTypeConvertible {
     associatedtype CType
