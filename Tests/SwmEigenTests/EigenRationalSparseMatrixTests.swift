@@ -230,27 +230,35 @@ class EigenSparseRationalMatrixTests: XCTestCase {
         XCTAssertEqual(c, [1,2,3,4,0,0,0,0])
     }
 
-//    func testSolveLowerTriangular() {
-//        let L: M<_4, _4> = [
-//            1, 0, 0, 0,
-//            1, 1, 0, 0,
-//            -1,0, 1, 0,
-//            0, 2, 0, -1
-//        ]
-//        let b: M<_4, _1> = [1, 2, 1, 1]
-//        let x = M.solveLowerTriangular(L, b)
-//        XCTAssertEqual(L * x, b)
-//    }
-//
-//    func testSolveUpperTriangular() {
-//        let U: M<_4, _4> = [
-//            1, 2, 3, 4,
-//            0,-1, 0, 2,
-//            0 ,0, 1, 0,
-//            0, 0, 0, -1,
-//        ]
-//        let b: M<_4, _1> = [65, 3, 18, 17]
-//        let x = M.solveUpperTriangular(U, b)
-//        XCTAssertEqual(U * x, b)
-//    }
+    func testSolveLowerTriangular() {
+        let _L: M<_4, _4> = [
+            1, 0, 0, 0,
+            1, 1, 0, 0,
+            -1,0, 1, 0,
+            0, 2, 0, -1
+        ]
+        let _b: M<_4, _1> = [1, 2, 1, 1]
+        
+        let L = _L.impl
+        let b = _b.impl
+        let x = EigenSparseMatrixImpl<R>.solveLowerTriangular(L, b)
+        
+        XCTAssertEqual(L * x, b)
+    }
+
+    func testSolveUpperTriangular() {
+        let _U: M<_4, _4> = [
+            1, 2, 3, 4,
+            0,-1, 0, 2,
+            0 ,0, 1, 0,
+            0, 0, 0, -1,
+        ]
+        let _b: M<_4, _1> = [65, 3, 18, 17]
+        
+        let U = _U.impl
+        let b = _b.impl
+        let x = EigenSparseMatrixImpl<R>.solveUpperTriangular(U, b)
+        
+        XCTAssertEqual(U * x, b)
+    }
 }

@@ -14,7 +14,7 @@ using namespace std;
 using namespace Eigen;
 
 using R = RationalNum;
-using Mat = Eigen::SparseMatrix<R>;
+using Mat = SparseMatrix<R>;
 
 void *eigen_rat_s_init(int_t rows, int_t cols) {
     Mat *A = new Mat(rows, cols);
@@ -118,6 +118,30 @@ void eigen_rat_s_copy_nz(void *a, int_t *rows, int_t *cols, rational_t *vals) {
             *(vals++) = to_rational_t(it.value());
         }
     }
+}
+
+void eigen_rat_s_solve_lt(void *l, void *b, void *x) {
+    Mat *L = static_cast<Mat *>(l);
+    Mat *B = static_cast<Mat *>(b);
+    Mat *X = static_cast<Mat *>(x);
+    
+    using DMat = Matrix<R, Dynamic, Dynamic>;
+    DMat b_ = *B;
+    DMat x_ = L->triangularView<Lower>().solve(b_);
+    
+    *X = x_.sparseView();
+}
+
+void eigen_rat_s_solve_ut(void *u, void *b, void *x) {
+    Mat *U = static_cast<Mat *>(u);
+    Mat *B = static_cast<Mat *>(b);
+    Mat *X = static_cast<Mat *>(x);
+    
+    using DMat = Matrix<R, Dynamic, Dynamic>;
+    DMat b_ = *B;
+    DMat x_ = U->triangularView<Upper>().solve(b_);
+    
+    *X = x_.sparseView();
 }
 
 void eigen_rat_s_dump(void *ptr) {

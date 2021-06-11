@@ -8,7 +8,7 @@
 import SwmCore
 import CEigenBridge
 
-extension RationalNumber: EigenSparseMatrixCompatible {
+extension RationalNumber: EigenSparseMatrixCompatible_LU {
     public typealias CType = rational_t
     
     @inlinable
@@ -38,5 +38,7 @@ extension RationalNumber: EigenSparseMatrixCompatible {
     public static var eigen_nnz = eigen_rat_s_nnz
     public static var eigen_copy_nz = eigen_rat_s_copy_nz
     public static var eigen_dump = eigen_rat_s_dump
+    public static var eigen_solve_lt = eigen_rat_s_solve_lt
+    public static var eigen_solve_ut = eigen_rat_s_solve_ut
 }
 

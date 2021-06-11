@@ -36,6 +36,9 @@ void eigen_rat_s_scal_mul(rational_t r, void *a, void *b);
 int_t eigen_rat_s_nnz(void *a);
 void eigen_rat_s_copy_nz(void *a, int_t *rows, int_t *cols, rational_t *values);
 
+void eigen_rat_s_solve_lt(void *l, void *b, void *x);
+void eigen_rat_s_solve_ut(void *u, void *b, void *x);
+
 void eigen_rat_s_dump(void *ptr);
 
 #pragma clang assume_nonnull end

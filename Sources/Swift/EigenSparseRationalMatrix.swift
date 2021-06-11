@@ -40,6 +40,11 @@ public protocol EigenSparseMatrixCompatible: Ring {
     static var eigen_dump: (EigenMatrixPointer) -> Void { get }
 }
 
+public protocol EigenSparseMatrixCompatible_LU: EigenSparseMatrixCompatible {
+    static var eigen_solve_lt: (EigenMatrixPointer, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
+    static var eigen_solve_ut: (EigenMatrixPointer, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
+}
+
 public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: MatrixImpl {
     public typealias BaseRing = R
     
@@ -163,5 +168,20 @@ public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: MatrixImpl 
     
     public func dump() {
         R.eigen_dump(ptr)
+    }
+}
+
+// conforms to LUFactorizable
+extension EigenSparseMatrixImpl where R: EigenSparseMatrixCompatible_LU {
+    static func solveLowerTriangular(_ L: Self, _ b: Self) -> Self {
+        let x = Self(size: (L.size.cols, b.size.cols))
+        R.eigen_solve_lt(L.ptr, b.ptr, x.ptr)
+        return x
+    }
+
+    static func solveUpperTriangular(_ U: Self, _ b: Self) -> Self {
+        let x = Self(size: (U.size.cols, b.size.cols))
+        R.eigen_solve_ut(U.ptr, b.ptr, x.ptr)
+        return x
     }
 }
