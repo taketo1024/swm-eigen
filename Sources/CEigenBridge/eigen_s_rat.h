@@ -5,8 +5,8 @@
 //  Created by Taketo Sano on 2021/06/10.
 //
 
-#ifndef File_hpp
-#define File_hpp
+#ifndef eigen_s_rat_h
+#define eigen_s_rat_h
 
 #import "basic.h"
 
