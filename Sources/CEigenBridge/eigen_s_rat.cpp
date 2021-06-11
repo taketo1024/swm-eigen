@@ -150,11 +150,13 @@ void eigen_s_rat_scal_mul(rational_t r, void *a, void *b) {
 
 int_t eigen_s_rat_nnz(void *a) {
     Mat *A = static_cast<Mat *>(a);
+    A->prune(RationalNum(0));
     return A->nonZeros();
 }
 
 void eigen_s_rat_copy_nz(void *a, int_t *rows, int_t *cols, rational_t *vals) {
     Mat *A = static_cast<Mat *>(a);
+    A->prune(RationalNum(0));
     for (int k = 0; k < A->outerSize(); ++k) {
         for (Mat::InnerIterator it(*A, k); it; ++it) {
             *(rows++) = it.row();

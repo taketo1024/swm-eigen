@@ -148,11 +148,13 @@ void eigen_s_int_scal_mul(int_t r, void *a, void *b) {
 
 int_t eigen_s_int_nnz(void *a) {
     Mat *A = static_cast<Mat *>(a);
+    A->prune(int_t(0));
     return A->nonZeros();
 }
 
 void eigen_s_int_copy_nz(void *a, int_t *rows, int_t *cols, int_t *vals) {
     Mat *A = static_cast<Mat *>(a);
+    A->prune(int_t(0));
     for (int k = 0; k < A->outerSize(); ++k) {
         for (Mat::InnerIterator it(*A, k); it; ++it) {
             *(rows++) = it.row();
