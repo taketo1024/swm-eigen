@@ -50,7 +50,7 @@ public protocol EigenSparseMatrixCompatible_LU: EigenSparseMatrixCompatible {
     static var eigen_s_solve_ut: (EigenMatrixPointer, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
 }
 
-public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: MatrixImpl {
+public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: SparseMatrixImpl {
     public typealias BaseRing = R
     
     private var ptr: EigenMatrixPointer
@@ -157,6 +157,10 @@ public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: MatrixImpl 
     
     public func permute(rowsBy p: Permutation<anySize>, colsBy q: Permutation<anySize>) -> Self {
         permuteRows(by: p).permuteCols(by: q)
+    }
+    
+    public var numberOfNonZeros: Int {
+        R.eigen_s_nnz(ptr)
     }
     
     public var nonZeroEntries: AnySequence<MatrixEntry<R>> {
