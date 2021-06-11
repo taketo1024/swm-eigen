@@ -20,12 +20,6 @@ typedef struct {
 } rational_t;
 
 typedef struct {
-    int_t row;
-    int_t col;
-    rational_t value;
-} rational_triplet_t;
-
-typedef struct {
     int_t length;
     int_t *indices;
 } perm_t;

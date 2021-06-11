@@ -32,17 +32,26 @@ void eigen_rat_s_copy(void *from, void *to) {
     *B = *A;
 }
 
-void eigen_rat_s_set_triplets(void *a, rational_triplet_t *triplets, int_t count) {
+void eigen_rat_s_set_entries(void *a, int_t *r, int_t *c, rational_t *v, int_t count) {
     Mat *A = static_cast<Mat *>(a);
     
-    vector<Triplet<R>> v;
-    rational_triplet_t *p = triplets;
-    for (int_t i = 0; i < count; ++i, ++p) {
-        Triplet<R> t(p->row, p->col, p->value);
-        v.push_back(t);
+    vector<Triplet<R>> vec;
+    for (int_t i = 0; i < count; ++i, ++r, ++c, ++v) {
+        Triplet<R> t(*r, *c, *v);
+        vec.push_back(t);
     }
     
-    A->setFromTriplets(v.begin(), v.end());
+    A->setFromTriplets(vec.begin(), vec.end());
+}
+
+rational_t eigen_rat_s_get_entry(void *a, int_t i, int_t j) {
+    Mat *A = static_cast<Mat *>(a);
+    return to_rational_t(A->coeff(i, j));
+}
+
+void eigen_rat_s_set_entry(void *a, int_t i, int_t j, rational_t r) {
+    Mat *A = static_cast<Mat *>(a);
+    A->coeffRef(i, j) = RationalNum(r);
 }
 
 int_t eigen_rat_s_rows(void *a) {
@@ -53,16 +62,6 @@ int_t eigen_rat_s_rows(void *a) {
 int_t eigen_rat_s_cols(void *a) {
     Mat *A = static_cast<Mat *>(a);
     return A->cols();
-}
-
-rational_t eigen_rat_s_get(void *a, int_t i, int_t j) {
-    Mat *A = static_cast<Mat *>(a);
-    return to_rational_t(A->coeff(i, j));
-}
-
-void eigen_rat_s_set(void *a, int_t i, int_t j, rational_t r) {
-    Mat *A = static_cast<Mat *>(a);
-    A->coeffRef(i, j) = RationalNum(r);
 }
 
 bool eigen_rat_s_eq(void *a, void *b) {
@@ -110,12 +109,13 @@ int_t eigen_rat_s_nnz(void *a) {
     return A->nonZeros();
 }
 
-void eigen_rat_s_copy_nz(void *a, rational_triplet_t *array) {
+void eigen_rat_s_copy_nz(void *a, int_t *rows, int_t *cols, rational_t *vals) {
     Mat *A = static_cast<Mat *>(a);
     for (int k = 0; k < A->outerSize(); ++k) {
         for (Mat::InnerIterator it(*A, k); it; ++it) {
-            rational_triplet_t t = {it.row(), it.col(), to_rational_t(it.value())};
-            *(array++) = t;
+            *(rows++) = it.row();
+            *(cols++) = it.col();
+            *(vals++) = to_rational_t(it.value());
         }
     }
 }

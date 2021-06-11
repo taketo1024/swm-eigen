@@ -12,7 +12,7 @@ import SwmCore
 class RationalNumTests: XCTestCase {
     func testConvert() {
         let a = RationalNumber.random(in: 0 ... 10)
-        let b = a.toCType
+        let b = a.toCType()
         let c = RationalNumber(fromCType: b)
         XCTAssertEqual(a, c)
     }

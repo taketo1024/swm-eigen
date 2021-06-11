@@ -15,18 +15,6 @@ public protocol CTypeConvertible {
     var toCType: CType { get }
 }
 
-extension RationalNumber: CTypeConvertible {
-    @_transparent
-    public init(fromCType r: rational_t) {
-        self.init(r.p, r.q)
-    }
-    
-    @_transparent
-    public var toCType: rational_t {
-        rational_t(p: numerator, q: denominator)
-    }
-}
-
 extension Permutation where n == anySize {
     public init(fromCType r: perm_t) {
         let indices = UnsafeBufferPointer(start: r.indices, count: r.length)
