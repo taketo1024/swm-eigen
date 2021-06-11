@@ -176,7 +176,8 @@ public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: MatrixImpl 
     }
     
     public static func == (a: Self, b: Self) -> Bool {
-        R.eigen_s_eq(a.ptr, b.ptr)
+        DefaultMatrixImpl<R>(size: a.size, entries: a.nonZeroEntries)
+            == DefaultMatrixImpl<R>(size: b.size, entries: b.nonZeroEntries)
     }
     
     public static func + (a: Self, b: Self) -> Self {

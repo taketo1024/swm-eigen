@@ -12,12 +12,12 @@ extension RationalNumber: EigenSparseMatrixCompatible_LU {
     public typealias CType = rational_t
     
     @inlinable
-    public init(fromCType r: rational_t) {
+    public init(fromCType r: CType) {
         self.init(r.p, r.q)
     }
     
     @inlinable
-    public func toCType() -> rational_t {
+    public func toCType() -> CType {
         rational_t(p: numerator, q: denominator)
     }
     
