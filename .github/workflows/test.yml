@@ -16,3 +16,11 @@ jobs:
         submodules: recursive
     - name: Run tests
       run: swift test -v
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Run tests
+      run: swift test -v
