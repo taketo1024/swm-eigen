@@ -8,6 +8,8 @@
 #ifndef Basic_h
 #define Basic_h
 
+#import <stdbool.h>
+
 typedef signed long int_t;
 
 inline int_t absInt(int_t x) { return x >= 0 ? x : -x; }
