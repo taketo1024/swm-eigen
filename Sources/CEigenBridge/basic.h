@@ -24,7 +24,7 @@ typedef struct {
     int_t *indices;
 } perm_t;
 
-perm_t init_perm(int_t length);
-void free_perm(perm_t p);
+perm_t perm_init(int_t length);
+void perm_free(perm_t p);
 
 #endif /* Header_h */

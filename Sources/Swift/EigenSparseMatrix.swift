@@ -21,33 +21,33 @@ public protocol EigenSparseMatrixCompatible: Ring {
     init(fromCType r: CType)
     func toCType() -> CType
     
-    static var eigen_init: (Int, Int) -> EigenMatrixPointer { get }
-    static var eigen_free: (EigenMatrixPointer) -> Void { get }
-    static var eigen_copy: (EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
-    static var eigen_set_entries: (EigenMatrixPointer, UnsafeMutablePointer<Int>, UnsafeMutablePointer<Int>, UnsafeMutablePointer<CType>, Int) -> Void { get }
-    static var eigen_get_entry: (EigenMatrixPointer, Int, Int) -> CType { get }
-    static var eigen_set_entry: (EigenMatrixPointer, Int, Int, CType) -> Void { get }
-    static var eigen_rows: (EigenMatrixPointer) -> Int { get }
-    static var eigen_cols: (EigenMatrixPointer) -> Int { get }
-    static var eigen_transpose: (EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
-    static var eigen_submatrix: (EigenMatrixPointer, int_t, int_t, int_t, int_t, EigenMatrixPointer) -> Void { get }
-    static var eigen_concat: (EigenMatrixPointer, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
-    static var eigen_perm_rows: (EigenMatrixPointer, perm_t, EigenMatrixPointer) -> Void { get }
-    static var eigen_perm_cols: (EigenMatrixPointer, perm_t, EigenMatrixPointer) -> Void { get }
-    static var eigen_eq: (EigenMatrixPointer, EigenMatrixPointer) -> Bool { get }
-    static var eigen_add: (EigenMatrixPointer, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
-    static var eigen_neg: (EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
-    static var eigen_minus: (EigenMatrixPointer, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
-    static var eigen_mul: (EigenMatrixPointer, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
-    static var eigen_scal_mul: (CType, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
-    static var eigen_nnz: (EigenMatrixPointer) -> Int { get }
-    static var eigen_copy_nz: (EigenMatrixPointer, UnsafeMutablePointer<Int>, UnsafeMutablePointer<Int>, UnsafeMutablePointer<CType>) -> Void { get }
-    static var eigen_dump: (EigenMatrixPointer) -> Void { get }
+    static var eigen_s_init: (Int, Int) -> EigenMatrixPointer { get }
+    static var eigen_s_free: (EigenMatrixPointer) -> Void { get }
+    static var eigen_s_copy: (EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
+    static var eigen_s_set_entries: (EigenMatrixPointer, UnsafeMutablePointer<Int>, UnsafeMutablePointer<Int>, UnsafeMutablePointer<CType>, Int) -> Void { get }
+    static var eigen_s_get_entry: (EigenMatrixPointer, Int, Int) -> CType { get }
+    static var eigen_s_set_entry: (EigenMatrixPointer, Int, Int, CType) -> Void { get }
+    static var eigen_s_rows: (EigenMatrixPointer) -> Int { get }
+    static var eigen_s_cols: (EigenMatrixPointer) -> Int { get }
+    static var eigen_s_transpose: (EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
+    static var eigen_s_submatrix: (EigenMatrixPointer, int_t, int_t, int_t, int_t, EigenMatrixPointer) -> Void { get }
+    static var eigen_s_concat: (EigenMatrixPointer, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
+    static var eigen_s_perm_rows: (EigenMatrixPointer, perm_t, EigenMatrixPointer) -> Void { get }
+    static var eigen_s_perm_cols: (EigenMatrixPointer, perm_t, EigenMatrixPointer) -> Void { get }
+    static var eigen_s_eq: (EigenMatrixPointer, EigenMatrixPointer) -> Bool { get }
+    static var eigen_s_add: (EigenMatrixPointer, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
+    static var eigen_s_neg: (EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
+    static var eigen_s_minus: (EigenMatrixPointer, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
+    static var eigen_s_mul: (EigenMatrixPointer, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
+    static var eigen_s_scal_mul: (CType, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
+    static var eigen_s_nnz: (EigenMatrixPointer) -> Int { get }
+    static var eigen_s_copy_nz: (EigenMatrixPointer, UnsafeMutablePointer<Int>, UnsafeMutablePointer<Int>, UnsafeMutablePointer<CType>) -> Void { get }
+    static var eigen_s_dump: (EigenMatrixPointer) -> Void { get }
 }
 
 public protocol EigenSparseMatrixCompatible_LU: EigenSparseMatrixCompatible {
-    static var eigen_solve_lt: (EigenMatrixPointer, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
-    static var eigen_solve_ut: (EigenMatrixPointer, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
+    static var eigen_s_solve_lt: (EigenMatrixPointer, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
+    static var eigen_s_solve_ut: (EigenMatrixPointer, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
 }
 
 public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: MatrixImpl {
@@ -59,12 +59,12 @@ public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: MatrixImpl 
     private init(_ ptr: EigenMatrixPointer) {
         self.ptr = ptr
         self.destr = Destructor {
-            R.eigen_free(ptr)
+            R.eigen_s_free(ptr)
         }
     }
     
     private init(size: MatrixSize) {
-        let ptr = R.eigen_init(size.rows, size.cols)
+        let ptr = R.eigen_s_init(size.rows, size.cols)
         self.init(ptr)
     }
     
@@ -86,38 +86,38 @@ public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: MatrixImpl 
             }
         }
         
-        R.eigen_set_entries(ptr, &rows, &cols, &vals, vals.count)
+        R.eigen_s_set_entries(ptr, &rows, &cols, &vals, vals.count)
     }
     
     public mutating func copyOnWrite() {
         if !isKnownUniquelyReferenced(&destr) {
-            let new = R.eigen_init(size.rows, size.cols)
-            R.eigen_copy(ptr, new)
+            let new = R.eigen_s_init(size.rows, size.cols)
+            R.eigen_s_copy(ptr, new)
             
             self.ptr = new
             self.destr = Destructor {
-                R.eigen_free(new)
+                R.eigen_s_free(new)
             }
         }
     }
 
     public subscript(i: Int, j: Int) -> R {
         get {
-            R(fromCType: R.eigen_get_entry(ptr, i, j))
+            R(fromCType: R.eigen_s_get_entry(ptr, i, j))
         }
         set {
             copyOnWrite()
-            R.eigen_set_entry(ptr, i, j, newValue.toCType())
+            R.eigen_s_set_entry(ptr, i, j, newValue.toCType())
         }
     }
     
     public var size: (rows: Int, cols: Int) {
-        (R.eigen_rows(ptr), R.eigen_cols(ptr))
+        (R.eigen_s_rows(ptr), R.eigen_s_cols(ptr))
     }
     
     public var transposed: Self {
         let b = Self(size: (size.cols, size.rows))
-        R.eigen_transpose(ptr, b.ptr)
+        R.eigen_s_transpose(ptr, b.ptr)
         return b
     }
     
@@ -127,31 +127,31 @@ public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: MatrixImpl 
         let h = rowRange.upperBound - rowRange.lowerBound
         let w = colRange.upperBound - colRange.lowerBound
         let b = Self(size: (h, w))
-        R.eigen_submatrix(ptr, i, j, h, w, b.ptr)
+        R.eigen_s_submatrix(ptr, i, j, h, w, b.ptr)
         return b
     }
     
     public func concat(_ B: Self) -> Self {
         let c = Self(size: (size.rows, size.cols + B.size.cols))
-        R.eigen_concat(ptr, B.ptr, c.ptr)
+        R.eigen_s_concat(ptr, B.ptr, c.ptr)
         return c
     }
     
     public func permuteRows(by P: Permutation<anySize>) -> Self {
         let b = Self(size: size)
-        let p = init_perm(P.length)
-        defer { free_perm(p) }
+        let p = perm_init(P.length)
+        defer { perm_free(p) }
         P.copy(into: p)
-        R.eigen_perm_rows(ptr, p, b.ptr)
+        R.eigen_s_perm_rows(ptr, p, b.ptr)
         return b
     }
     
     public func permuteCols(by P: Permutation<anySize>) -> Self {
         let b = Self(size: size)
-        let p = init_perm(P.length)
-        defer { free_perm(p) }
+        let p = perm_init(P.length)
+        defer { perm_free(p) }
         P.copy(into: p)
-        R.eigen_perm_cols(ptr, p, b.ptr)
+        R.eigen_s_perm_cols(ptr, p, b.ptr)
         return b
     }
     
@@ -160,12 +160,12 @@ public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: MatrixImpl 
     }
     
     public var nonZeroEntries: AnySequence<MatrixEntry<R>> {
-        let l = R.eigen_nnz(ptr)
+        let l = R.eigen_s_nnz(ptr)
         let rows = UnsafeMutableBufferPointer<Int>.allocate(capacity: l)
         let cols = UnsafeMutableBufferPointer<Int>.allocate(capacity: l)
         let vals = UnsafeMutableBufferPointer<R.CType>.allocate(capacity: l)
 
-        R.eigen_copy_nz(ptr, rows.baseAddress!, cols.baseAddress!, vals.baseAddress!)
+        R.eigen_s_copy_nz(ptr, rows.baseAddress!, cols.baseAddress!, vals.baseAddress!)
 
         return AnySequence((0 ..< l).compactMap { i -> MatrixEntry<BaseRing>? in
             let r = rows[i]
@@ -176,47 +176,47 @@ public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: MatrixImpl 
     }
     
     public static func == (a: Self, b: Self) -> Bool {
-        R.eigen_eq(a.ptr, b.ptr)
+        R.eigen_s_eq(a.ptr, b.ptr)
     }
     
     public static func + (a: Self, b: Self) -> Self {
         let c = Self(size: a.size)
-        R.eigen_add(a.ptr, b.ptr, c.ptr)
+        R.eigen_s_add(a.ptr, b.ptr, c.ptr)
         return c
     }
     
     public static prefix func - (a: Self) -> Self {
         let b = Self(size: a.size)
-        R.eigen_neg(a.ptr, b.ptr)
+        R.eigen_s_neg(a.ptr, b.ptr)
         return b
     }
     
     public static func - (a: Self, b: Self) -> Self {
         let c = Self(size: a.size)
-        R.eigen_minus(a.ptr, b.ptr, c.ptr)
+        R.eigen_s_minus(a.ptr, b.ptr, c.ptr)
         return c
     }
     
     public static func * (a: Self, b: Self) -> Self {
         let c = Self(size: (a.size.rows, b.size.cols))
-        R.eigen_mul(a.ptr, b.ptr, c.ptr)
+        R.eigen_s_mul(a.ptr, b.ptr, c.ptr)
         return c
     }
     
     public static func * (r: R, a: Self) -> Self {
         let b = Self(size: a.size)
-        R.eigen_scal_mul(r.toCType(), a.ptr, b.ptr)
+        R.eigen_s_scal_mul(r.toCType(), a.ptr, b.ptr)
         return b
     }
     
     public static func * (a: Self, r: R) -> Self {
         let b = Self(size: a.size)
-        R.eigen_scal_mul(r.toCType(), a.ptr, b.ptr)
+        R.eigen_s_scal_mul(r.toCType(), a.ptr, b.ptr)
         return b
     }
     
     public func dump() {
-        R.eigen_dump(ptr)
+        R.eigen_s_dump(ptr)
     }
 }
 
@@ -224,13 +224,13 @@ public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: MatrixImpl 
 extension EigenSparseMatrixImpl where R: EigenSparseMatrixCompatible_LU {
     public static func solveLowerTriangular(_ L: Self, _ b: Self) -> Self {
         let x = Self(size: (L.size.cols, b.size.cols))
-        R.eigen_solve_lt(L.ptr, b.ptr, x.ptr)
+        R.eigen_s_solve_lt(L.ptr, b.ptr, x.ptr)
         return x
     }
 
     public static func solveUpperTriangular(_ U: Self, _ b: Self) -> Self {
         let x = Self(size: (U.size.cols, b.size.cols))
-        R.eigen_solve_ut(U.ptr, b.ptr, x.ptr)
+        R.eigen_s_solve_ut(U.ptr, b.ptr, x.ptr)
         return x
     }
 }
