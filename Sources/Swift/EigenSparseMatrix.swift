@@ -165,18 +165,19 @@ public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: SparseMatri
     
     public var nonZeroEntries: AnySequence<MatrixEntry<R>> {
         let l = R.eigen_s_nnz(ptr)
-        let rows = UnsafeMutableBufferPointer<Int>.allocate(capacity: l)
-        let cols = UnsafeMutableBufferPointer<Int>.allocate(capacity: l)
-        let vals = UnsafeMutableBufferPointer<R.CType>.allocate(capacity: l)
-
-        R.eigen_s_copy_nz(ptr, rows.baseAddress!, cols.baseAddress!, vals.baseAddress!)
-
-        return AnySequence((0 ..< l).compactMap { i -> MatrixEntry<BaseRing>? in
-            let r = rows[i]
-            let c = cols[i]
-            let v = R(fromCType: vals[i])
-            return v.isZero ? nil : MatrixEntry(r, c, v)
-        })
+        var rows = Array(repeating: 0, count: l)
+        var cols = Array(repeating: 0, count: l)
+        var vals = Array(repeating: R.zero.toCType(), count: l)
+        
+        rows.withUnsafeMutableBufferPointer { p1 in
+            cols.withUnsafeMutableBufferPointer { p2 in
+                vals.withUnsafeMutableBufferPointer { p3 in
+                    R.eigen_s_copy_nz(ptr, p1.baseAddress!, p2.baseAddress!, p3.baseAddress!)
+                }
+            }
+        }
+        
+        return AnySequence(NonZeroEntryIterator(rows, cols, vals))
     }
     
     public static func == (a: Self, b: Self) -> Bool {
@@ -222,6 +223,31 @@ public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: SparseMatri
     
     public func dump() {
         R.eigen_s_dump(ptr)
+    }
+    
+    private struct NonZeroEntryIterator: Sequence, IteratorProtocol {
+        let rows: [Int]
+        let cols: [Int]
+        let values: [R.CType]
+        var index: Int
+        
+        init(_ rows: [Int], _ cols: [Int], _ values: [R.CType]) {
+            self.rows = rows
+            self.cols = cols
+            self.values = values
+            self.index = 0
+        }
+        
+        mutating func next() -> MatrixEntry<R>? {
+            while index < values.count {
+                defer { index += 1 }
+                let value = R(fromCType: values[index])
+                if !value.isZero {
+                    return (rows[index], cols[index], value)
+                }
+            }
+            return nil
+        }
     }
 }
 
