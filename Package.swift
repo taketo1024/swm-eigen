@@ -15,17 +15,12 @@ let package = Package(
             url: "https://github.com/taketo1024/swm-core.git",
             from: "1.2.4"
 //            path: "../swm-core/"
-        ),
-        .package(
-            url: "https://github.com/taketo1024/swm-matrix-tools.git",
-            from: "1.1.2"
-//            path: "../swm-matrix-tools/"
         )
     ],
     targets: [
         .target(
-            name: "ObjCEigen",
-            path: "Sources/ObjC",
+            name: "CEigenBridge",
+            path: "Sources/CEigenBridge",
             cxxSettings: [
                 .headerSearchPath("../Eigen/"),
                 .define("EIGEN_MPL2_ONLY"),
@@ -35,9 +30,8 @@ let package = Package(
         .target(
             name: "SwmEigen",
             dependencies: [
-                "ObjCEigen",
+                "CEigenBridge",
                 .product(name: "SwmCore", package: "swm-core"),
-                .product(name: "SwmMatrixTools", package: "swm-matrix-tools")
             ],
             path: "Sources/Swift"
         ),
