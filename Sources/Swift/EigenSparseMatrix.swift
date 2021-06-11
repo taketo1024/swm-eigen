@@ -239,14 +239,15 @@ public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: SparseMatri
         }
         
         mutating func next() -> MatrixEntry<R>? {
-            while index < values.count {
-                defer { index += 1 }
-                let value = R(fromCType: values[index])
-                if !value.isZero {
-                    return (rows[index], cols[index], value)
-                }
+            if index >= values.count {
+                return nil
             }
-            return nil
+            defer { index += 1 }
+            let value = R(fromCType: values[index])
+            
+            assert(!value.isZero)
+            
+            return (rows[index], cols[index], value)
         }
     }
 }
