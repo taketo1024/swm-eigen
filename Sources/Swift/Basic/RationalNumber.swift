@@ -29,6 +29,11 @@ extension RationalNumber: EigenSparseMatrixCompatible_LU {
     public static var eigen_set_entry = eigen_rat_s_set_entry
     public static var eigen_rows = eigen_rat_s_rows
     public static var eigen_cols = eigen_rat_s_cols
+    public static var eigen_transpose = eigen_rat_s_transpose
+    public static var eigen_submatrix = eigen_rat_s_submatrix
+    public static var eigen_concat = eigen_rat_s_concat
+    public static var eigen_perm_rows = eigen_rat_s_perm_rows
+    public static var eigen_perm_cols = eigen_rat_s_perm_cols
     public static var eigen_eq = eigen_rat_s_eq
     public static var eigen_add = eigen_rat_s_add
     public static var eigen_neg = eigen_rat_s_neg

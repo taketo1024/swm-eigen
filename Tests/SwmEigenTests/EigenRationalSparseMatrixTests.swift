@@ -230,6 +230,22 @@ class EigenSparseRationalMatrixTests: XCTestCase {
         XCTAssertEqual(c, [1,2,3,4,0,0,0,0])
     }
 
+    func testPermuteRows() {
+        let a: M2 = [1,2,3,4]
+        let s = Permutation<_2>.transposition(0, 1)
+        let b = a.permuteRows(by: s)
+
+        XCTAssertEqual(b, [3,4,1,2])
+    }
+
+    func testPermuteCols() {
+        let a: M2 = [1,2,3,4]
+        let s = Permutation<_2>.transposition(0, 1)
+        let b = a.permuteCols(by: s)
+
+        XCTAssertEqual(b, [2,1,4,3])
+    }
+
     func testSolveLowerTriangular() {
         let _L: M<_4, _4> = [
             1, 0, 0, 0,

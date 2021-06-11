@@ -64,6 +64,49 @@ int_t eigen_rat_s_cols(void *a) {
     return A->cols();
 }
 
+void eigen_rat_s_transpose(void *a, void *b) {
+    Mat *A = static_cast<Mat *>(a);
+    Mat *B = static_cast<Mat *>(b);
+    *B = A->transpose();
+}
+
+void eigen_rat_s_submatrix(void *a, int_t i, int_t j, int_t h, int_t w, void *b) {
+    Mat *A = static_cast<Mat *>(a);
+    Mat *B = static_cast<Mat *>(b);
+    *B = A->block(i, j, h, w);
+}
+
+void eigen_rat_s_concat(void *a, void *b, void *c) {
+    Mat *A = static_cast<Mat *>(a);
+    Mat *B = static_cast<Mat *>(b);
+    Mat *C = static_cast<Mat *>(c);
+    
+    C->leftCols(A->cols()) = *A;
+    C->rightCols(B->cols()) = *B;
+}
+
+void eigen_rat_s_perm_rows(void *a, perm_t p, void *b) {
+    Mat *A = static_cast<Mat *>(a);
+    Mat *B = static_cast<Mat *>(b);
+    Eigen::VectorXi indices(p.length);
+    for(int_t i = 0; i < p.length; ++i) {
+        indices[i] = p.indices[i];
+    }
+    PermutationMatrix<Eigen::Dynamic> P(indices);
+    *B = P * (*A);
+}
+
+void eigen_rat_s_perm_cols(void *a, perm_t p, void *b) {
+    Mat *A = static_cast<Mat *>(a);
+    Mat *B = static_cast<Mat *>(b);
+    Eigen::VectorXi indices(p.length);
+    for(int_t i = 0; i < p.length; ++i) {
+        indices[i] = p.indices[i];
+    }
+    PermutationMatrix<Eigen::Dynamic> P(indices);
+    *B = (*A) * P.transpose();
+}
+
 bool eigen_rat_s_eq(void *a, void *b) {
     Mat *A = static_cast<Mat *>(a);
     Mat *B = static_cast<Mat *>(b);

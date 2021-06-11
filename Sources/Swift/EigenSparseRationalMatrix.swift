@@ -29,6 +29,11 @@ public protocol EigenSparseMatrixCompatible: Ring {
     static var eigen_set_entry: (EigenMatrixPointer, Int, Int, CType) -> Void { get }
     static var eigen_rows: (EigenMatrixPointer) -> Int { get }
     static var eigen_cols: (EigenMatrixPointer) -> Int { get }
+    static var eigen_transpose: (EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
+    static var eigen_submatrix: (EigenMatrixPointer, int_t, int_t, int_t, int_t, EigenMatrixPointer) -> Void { get }
+    static var eigen_concat: (EigenMatrixPointer, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
+    static var eigen_perm_rows: (EigenMatrixPointer, perm_t, EigenMatrixPointer) -> Void { get }
+    static var eigen_perm_cols: (EigenMatrixPointer, perm_t, EigenMatrixPointer) -> Void { get }
     static var eigen_eq: (EigenMatrixPointer, EigenMatrixPointer) -> Bool { get }
     static var eigen_add: (EigenMatrixPointer, EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
     static var eigen_neg: (EigenMatrixPointer, EigenMatrixPointer) -> Void { get }
@@ -108,6 +113,50 @@ public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: MatrixImpl 
     
     public var size: (rows: Int, cols: Int) {
         (R.eigen_rows(ptr), R.eigen_cols(ptr))
+    }
+    
+    public var transposed: Self {
+        let b = Self(size: (size.cols, size.rows))
+        R.eigen_transpose(ptr, b.ptr)
+        return b
+    }
+    
+    public func submatrix(rowRange: Range<Int>, colRange: Range<Int>) -> Self {
+        let i = rowRange.lowerBound
+        let j = colRange.lowerBound
+        let h = rowRange.upperBound - rowRange.lowerBound
+        let w = colRange.upperBound - colRange.lowerBound
+        let b = Self(size: (h, w))
+        R.eigen_submatrix(ptr, i, j, h, w, b.ptr)
+        return b
+    }
+    
+    public func concat(_ B: Self) -> Self {
+        let c = Self(size: (size.rows, size.cols + B.size.cols))
+        R.eigen_concat(ptr, B.ptr, c.ptr)
+        return c
+    }
+    
+    public func permuteRows(by P: Permutation<anySize>) -> Self {
+        let b = Self(size: size)
+        let p = init_perm(P.length)
+        defer { free_perm(p) }
+        P.copy(into: p)
+        R.eigen_perm_rows(ptr, p, b.ptr)
+        return b
+    }
+    
+    public func permuteCols(by P: Permutation<anySize>) -> Self {
+        let b = Self(size: size)
+        let p = init_perm(P.length)
+        defer { free_perm(p) }
+        P.copy(into: p)
+        R.eigen_perm_cols(ptr, p, b.ptr)
+        return b
+    }
+    
+    public func permute(rowsBy p: Permutation<anySize>, colsBy q: Permutation<anySize>) -> Self {
+        permuteRows(by: p).permuteCols(by: q)
     }
     
     public var nonZeroEntries: AnySequence<MatrixEntry<R>> {

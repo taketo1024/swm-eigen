@@ -25,6 +25,11 @@ void eigen_rat_s_set_entry(void *a, int_t i, int_t j, rational_t r);
 
 int_t eigen_rat_s_rows(void *a);
 int_t eigen_rat_s_cols(void *a);
+void eigen_rat_s_transpose(void *a, void *b);
+void eigen_rat_s_submatrix(void *a, int_t i, int_t j, int_t h, int_t w, void *b);
+void eigen_rat_s_concat(void *a, void *b, void *c);
+void eigen_rat_s_perm_rows(void *a, perm_t p, void *b);
+void eigen_rat_s_perm_cols(void *a, perm_t p, void *b);
 
 bool eigen_rat_s_eq(void *a, void *b);
 void eigen_rat_s_add(void *a, void *b, void *c);
