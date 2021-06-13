@@ -8,7 +8,7 @@
 import SwmCore
 import CEigenBridge
 
-public protocol EigenSparseMatrixCompatible: EigenMatrixCompatible {
+public protocol EigenSparseMatrixCompatible: Ring, CTypeCompatible  {
     static var eigen_s_init: (Int, Int) -> EigenMatrixPointer { get }
     static var eigen_s_free: (EigenMatrixPointer) -> Void { get }
     static var eigen_s_copy: (EigenMatrixPointer, EigenMatrixPointer) -> Void { get }

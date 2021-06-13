@@ -250,19 +250,17 @@ extension EigenMatrixImpl where R: EigenSparseMatrixCompatible {
 }
 
 extension MatrixIF {
-    public func toSparse<R: EigenSparseMatrixCompatible>() -> EigenSparseMatrix<R, n, m> where Impl == EigenMatrixImpl<R> {
+    public func toSparse<R>() -> EigenSparseMatrix<R, n, m>
+    where R: EigenMatrixCompatible & EigenSparseMatrixCompatible, Impl == EigenMatrixImpl<R> {
         .init(impl.toSparse())
     }
 }
 
 // MEMO
-// conforms to LUFactorizable
+// EigenMatrixImpl conforms to LUFactorizable.
+
 extension EigenMatrixImpl where R: EigenMatrixCompatible_LU {
     public func LUfactorize() -> (P: Permutation<anySize>, Q: Permutation<anySize>, L: Self, U: Self) {
-        denseLUfactorize()
-    }
-    
-    public func denseLUfactorize() -> (P: Permutation<anySize>, Q: Permutation<anySize>, L: Self, U: Self) {
         let p = perm_init(self.size.rows)
         let q = perm_init(self.size.cols)
         defer {

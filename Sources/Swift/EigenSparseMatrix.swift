@@ -220,7 +220,7 @@ public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: SparseMatri
     }
 }
 
-extension EigenSparseMatrixImpl {
+extension EigenSparseMatrixImpl where R: EigenMatrixCompatible {
     public func toDense() -> EigenMatrixImpl<R> {
         let dense = EigenMatrixImpl<R>(size: size)
         R.eigen_s_copy_to_dense(ptr, dense.pointer)
@@ -229,13 +229,16 @@ extension EigenSparseMatrixImpl {
 }
 
 extension MatrixIF {
-    public func toDense<R: EigenSparseMatrixCompatible>() -> EigenMatrix<R, n, m> where Impl == EigenSparseMatrixImpl<R> {
+    public func toDense<R>() -> EigenMatrix<R, n, m>
+    where R: EigenMatrixCompatible & EigenSparseMatrixCompatible, Impl == EigenSparseMatrixImpl<R> {
         .init(impl.toDense())
     }
 }
 
-// MEMO
-// conforms to SparseLUFactorizable.
+// MEMO:
+// EigenSparseMatrixImpl conforms to LUFactorizable.
+// Eigen does not provide LU factorization for rectangular sparce matrices.
+
 extension EigenSparseMatrixImpl where R: EigenSparseMatrixCompatible_LU {
     public static func solveLowerTriangular(_ L: Self, _ b: Self) -> Self {
         let x = Self(size: (L.size.cols, b.size.cols))
