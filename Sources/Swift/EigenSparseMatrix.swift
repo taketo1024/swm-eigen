@@ -8,8 +8,6 @@
 import SwmCore
 import CEigenBridge
 
-public typealias EigenMatrixPointer = UnsafeMutableRawPointer
-
 public typealias EigenSparseMatrix<R, n, m> = MatrixIF<EigenSparseMatrixImpl<R>, n, m>
 where R: EigenSparseMatrixCompatible, n: SizeType, m: SizeType
 
