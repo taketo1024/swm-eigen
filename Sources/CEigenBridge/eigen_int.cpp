@@ -14,7 +14,7 @@
 using namespace std;
 using namespace Eigen;
 
-using R = RationalNum;
+using R = int_t;
 using Mat = Matrix<R, Dynamic, Dynamic>;
 
 void *eigen_int_init(int_t rows, int_t cols) {
@@ -41,14 +41,14 @@ int_t eigen_int_get_entry(void *a, int_t i, int_t j) {
 
 void eigen_int_set_entry(void *a, int_t i, int_t j, int_t r) {
     Mat *A = static_cast<Mat *>(a);
-    A->coeffRef(i, j) = RationalNum(r);
+    A->coeffRef(i, j) = r;
 }
 
 void eigen_int_copy_entries(void *a, int_t *vals) {
     Mat *A = static_cast<Mat *>(a);
     for(int_t i = 0; i < A->rows(); i++) {
         for(int_t j = 0; j < A->cols(); j++) {
-            *(vals++) = int_t(A->coeff(i, j));
+            *(vals++) = A->coeff(i, j);
         }
     }
 }
@@ -70,7 +70,8 @@ bool eigen_int_is_zero(void *a) {
 
 int_t eigen_int_det(void *a) {
     Mat *A = static_cast<Mat *>(a);
-    return int_t(A->determinant());
+    RationalNum det = A->cast<RationalNum>().determinant();
+    return det.getNumerator();
 }
 
 int_t eigen_int_trace(void *a) {
@@ -81,9 +82,11 @@ int_t eigen_int_trace(void *a) {
 void eigen_int_inv(void *a, void *b) {
     Mat *A = static_cast<Mat *>(a);
     Mat *B = static_cast<Mat *>(b);
-    *B = A->inverse();
+    
+    using RMat = Matrix<RationalNum, Dynamic, Dynamic>;
+    RMat rmat = A->cast<RationalNum>();
+    *B = rmat.inverse().cast<int_t>();
 }
-
 
 void eigen_int_transpose(void *a, void *b) {
     Mat *A = static_cast<Mat *>(a);
@@ -171,10 +174,9 @@ void eigen_int_mul(void *a, void *b, void *c) {
 }
 
 void eigen_int_scal_mul(int_t r, void *a, void *b) {
-    RationalNum r_ = RationalNum(r);
     Mat *A = static_cast<Mat *>(a);
     Mat *B = static_cast<Mat *>(b);
-    *B = r_ * (*A);
+    *B = r * (*A);
 }
 
 void eigen_int_dump(void *ptr) {
