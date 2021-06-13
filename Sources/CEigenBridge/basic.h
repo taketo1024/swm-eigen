@@ -8,6 +8,7 @@
 #ifndef Basic_h
 #define Basic_h
 
+#import <stdint.h>
 #import <stdbool.h>
 
 typedef signed long int_t;

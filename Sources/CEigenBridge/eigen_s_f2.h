@@ -9,7 +9,6 @@
 #define eigen_s_f2_h
 
 #import "basic.h"
-#import <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {

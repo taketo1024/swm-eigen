@@ -66,4 +66,8 @@ template<> struct NumTraits<F2>
 };
 }
 
+inline F2 abs(const F2&  x)  { return x; }
+inline F2 abs2(const F2& x)  { return x*x; }
+
+
 #endif
