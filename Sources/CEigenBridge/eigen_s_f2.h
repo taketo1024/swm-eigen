@@ -19,6 +19,9 @@ extern "C" {
 void *eigen_s_f2_init(int_t rows, int_t cols);
 void eigen_s_f2_free(void *ptr);
 void eigen_s_f2_copy(void *from, void *to);
+void eigen_s_f2_copy_from_dense(void *from, void *to);
+void eigen_s_f2_copy_to_dense(void *from, void *to);
+
 void eigen_s_f2_set_entries(void *a, int_t *rows, int_t *cols, uint8_t *values, int_t count);
 uint8_t eigen_s_f2_get_entry(void *a, int_t i, int_t j);
 void eigen_s_f2_set_entry(void *a, int_t i, int_t j, uint8_t r);

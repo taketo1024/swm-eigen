@@ -27,7 +27,7 @@ public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: SparseMatri
         }
     }
     
-    private init(size: MatrixSize) {
+    public init(size: MatrixSize) {
         let ptr = R.eigen_s_init(size.rows, size.cols)
         self.init(ptr)
     }
@@ -51,6 +51,10 @@ public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: SparseMatri
         }
         
         R.eigen_s_set_entries(ptr, &rows, &cols, &vals, vals.count)
+    }
+    
+    internal var pointer: EigenMatrixPointer {
+        ptr
     }
     
     public mutating func copyOnWrite() {
@@ -216,7 +220,22 @@ public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: SparseMatri
     }
 }
 
-// conforms to LUFactorizable
+extension EigenSparseMatrixImpl {
+    public func toDense() -> EigenMatrixImpl<R> {
+        let dense = EigenMatrixImpl<R>(size: size)
+        R.eigen_s_copy_to_dense(ptr, dense.pointer)
+        return dense
+    }
+}
+
+extension MatrixIF {
+    public func toDense<R: EigenSparseMatrixCompatible>() -> EigenMatrix<R, n, m> where Impl == EigenSparseMatrixImpl<R> {
+        .init(impl.toDense())
+    }
+}
+
+// MEMO
+// conforms to SparseLUFactorizable.
 extension EigenSparseMatrixImpl where R: EigenSparseMatrixCompatible_LU {
     public static func solveLowerTriangular(_ L: Self, _ b: Self) -> Self {
         let x = Self(size: (L.size.cols, b.size.cols))

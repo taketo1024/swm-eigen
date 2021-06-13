@@ -60,6 +60,8 @@ extension 𝐅₂: EigenSparseMatrixCompatible {
     public static var eigen_s_init = eigen_s_f2_init
     public static var eigen_s_free = eigen_s_f2_free
     public static var eigen_s_copy = eigen_s_f2_copy
+    public static var eigen_s_copy_from_dense = eigen_s_f2_copy_from_dense
+    public static var eigen_s_copy_to_dense = eigen_s_f2_copy_to_dense
     public static var eigen_s_set_entries = eigen_s_f2_set_entries
     public static var eigen_s_get_entry = eigen_s_f2_get_entry
     public static var eigen_s_set_entry = eigen_s_f2_set_entry

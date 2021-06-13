@@ -26,6 +26,8 @@ extension Int: EigenMatrixCompatible {
     public static var eigen_init = eigen_int_init
     public static var eigen_free = eigen_int_free
     public static var eigen_copy = eigen_int_copy
+    public static var eigen_s_copy_from_dense = eigen_s_int_copy_from_dense
+    public static var eigen_s_copy_to_dense = eigen_s_int_copy_to_dense
     public static var eigen_get_entry = eigen_int_get_entry
     public static var eigen_set_entry = eigen_int_set_entry
     public static var eigen_copy_entries = eigen_int_copy_entries

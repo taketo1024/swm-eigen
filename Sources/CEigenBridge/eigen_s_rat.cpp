@@ -19,6 +19,7 @@ using Mat = SparseMatrix<R>;
 
 void *eigen_s_rat_init(int_t rows, int_t cols) {
     Mat *A = new Mat(rows, cols);
+    A->setZero();
     return static_cast<void *>(A);
 }
 
@@ -30,6 +31,20 @@ void eigen_s_rat_free(void *ptr) {
 void eigen_s_rat_copy(void *from, void *to) {
     Mat *A = static_cast<Mat *>(from);
     Mat *B = static_cast<Mat *>(to);
+    *B = *A;
+}
+
+void eigen_s_rat_copy_from_dense(void *from, void *to) {
+    using DMat = Matrix<R, Dynamic, Dynamic>;
+    DMat *A = static_cast<DMat *>(from);
+    Mat *B = static_cast<Mat *>(to);
+    *B = A->sparseView();
+}
+
+void eigen_s_rat_copy_to_dense(void *from, void *to) {
+    using DMat = Matrix<R, Dynamic, Dynamic>;
+    Mat *A = static_cast<Mat *>(from);
+    DMat *B = static_cast<DMat *>(to);
     *B = *A;
 }
 

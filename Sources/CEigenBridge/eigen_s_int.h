@@ -19,6 +19,9 @@ extern "C" {
 void *eigen_s_int_init(int_t rows, int_t cols);
 void eigen_s_int_free(void *ptr);
 void eigen_s_int_copy(void *from, void *to);
+void eigen_s_int_copy_from_dense(void *from, void *to);
+void eigen_s_int_copy_to_dense(void *from, void *to);
+
 void eigen_s_int_set_entries(void *a, int_t *rows, int_t *cols, int_t *values, int_t count);
 int_t eigen_s_int_get_entry(void *a, int_t i, int_t j);
 void eigen_s_int_set_entry(void *a, int_t i, int_t j, int_t r);

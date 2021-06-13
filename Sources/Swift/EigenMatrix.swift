@@ -27,7 +27,7 @@ public struct EigenMatrixImpl<R: EigenMatrixCompatible>: MatrixImpl {
         }
     }
     
-    private init(size: MatrixSize) {
+    public init(size: MatrixSize) {
         let ptr = R.eigen_init(size.rows, size.cols)
         self.init(ptr)
     }
@@ -43,6 +43,10 @@ public struct EigenMatrixImpl<R: EigenMatrixCompatible>: MatrixImpl {
                 R.eigen_set_entry(ptr, i, j, a.toCType())
             }
         }
+    }
+    
+    internal var pointer: EigenMatrixPointer {
+        ptr
     }
     
     public mutating func copyOnWrite() {
@@ -66,7 +70,7 @@ public struct EigenMatrixImpl<R: EigenMatrixCompatible>: MatrixImpl {
             R.eigen_set_entry(ptr, i, j, newValue.toCType())
         }
     }
-    
+        
     public var size: (rows: Int, cols: Int) {
         (R.eigen_rows(ptr), R.eigen_cols(ptr))
     }
@@ -237,6 +241,21 @@ public struct EigenMatrixImpl<R: EigenMatrixCompatible>: MatrixImpl {
     }
 }
 
+extension EigenMatrixImpl where R: EigenSparseMatrixCompatible {
+    public func toSparse() -> EigenSparseMatrixImpl<R> {
+        let sparse = EigenSparseMatrixImpl<R>(size: size)
+        R.eigen_s_copy_from_dense(ptr, sparse.pointer)
+        return sparse
+    }
+}
+
+extension MatrixIF {
+    public func toSparse<R: EigenSparseMatrixCompatible>() -> EigenSparseMatrix<R, n, m> where Impl == EigenMatrixImpl<R> {
+        .init(impl.toSparse())
+    }
+}
+
+// MEMO
 // conforms to LUFactorizable
 extension EigenMatrixImpl where R: EigenMatrixCompatible_LU {
     public func LUfactorize() -> (P: Permutation<anySize>, Q: Permutation<anySize>, L: Self, U: Self) {

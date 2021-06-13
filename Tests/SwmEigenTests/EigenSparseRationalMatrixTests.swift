@@ -51,6 +51,18 @@ class EigenSparseRationalMatrixTests: XCTestCase {
         XCTAssertEqual(a, [1,2,3,0])
     }
 
+    func testDenseToSparse() {
+        let a: EigenMatrix<R, _2, _2> = [1,2,3,4]
+        let b = a.toSparse()
+        XCTAssertEqual(b.serialize(), [1,2,3,4])
+    }
+    
+    func testSparseToDense() {
+        let a: EigenSparseMatrix<R, _2, _2> = [1,2,3,4]
+        let b = a.toDense()
+        XCTAssertEqual(b.serialize(), [1,2,3,4])
+    }
+
     func testSubscript() {
         let a: M2 = [1,2,0,4]
         XCTAssertEqual(a[0, 0], 1)

@@ -60,6 +60,8 @@ extension RationalNumber: EigenSparseMatrixCompatible {
     public static var eigen_s_init = eigen_s_rat_init
     public static var eigen_s_free = eigen_s_rat_free
     public static var eigen_s_copy = eigen_s_rat_copy
+    public static var eigen_s_copy_from_dense = eigen_s_rat_copy_from_dense
+    public static var eigen_s_copy_to_dense = eigen_s_rat_copy_to_dense
     public static var eigen_s_set_entries = eigen_s_rat_set_entries
     public static var eigen_s_get_entry = eigen_s_rat_get_entry
     public static var eigen_s_set_entry = eigen_s_rat_set_entry
