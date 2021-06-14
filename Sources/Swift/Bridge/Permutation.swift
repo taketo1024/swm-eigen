@@ -11,7 +11,7 @@ import CEigenBridge
 extension Permutation where n == anySize {
     public init(fromCType r: perm_t) {
         let indices = UnsafeBufferPointer(start: r.indices, count: r.length)
-        self.init(length: r.length, indices: indices)
+        self.init(indices: indices)
     }
     
     public func copy(into p: perm_t) {
