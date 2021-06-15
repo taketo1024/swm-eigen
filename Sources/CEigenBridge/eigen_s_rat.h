@@ -19,6 +19,9 @@ extern "C" {
 void *eigen_s_rat_init(int_t rows, int_t cols);
 void eigen_s_rat_free(void *ptr);
 void eigen_s_rat_copy(void *from, void *to);
+void eigen_s_rat_copy_from_dense(void *from, void *to);
+void eigen_s_rat_copy_to_dense(void *from, void *to);
+
 void eigen_s_rat_set_entries(void *a, int_t *rows, int_t *cols, rational_t *values, int_t count);
 rational_t eigen_s_rat_get_entry(void *a, int_t i, int_t j);
 void eigen_s_rat_set_entry(void *a, int_t i, int_t j, rational_t r);

@@ -13,7 +13,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/taketo1024/swm-core.git",
-            from: "1.2.4"
+            from: "1.2.6"
 //            path: "../swm-core/"
         )
     ],
@@ -33,7 +33,7 @@ let package = Package(
                 "CEigenBridge",
                 .product(name: "SwmCore", package: "swm-core"),
             ],
-            path: "Sources/Swift"
+            path: "Sources/SwmEigen"
         ),
         .testTarget(
             name: "SwmEigenTests",

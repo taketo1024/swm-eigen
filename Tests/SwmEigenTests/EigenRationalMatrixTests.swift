@@ -10,10 +10,10 @@ import XCTest
 import SwmCore
 @testable import SwmEigen
 
-class EigenSparseF2MatrixTests: XCTestCase {
+class EigenRationalMatrixTests: XCTestCase {
     
-    typealias R = 𝐅₂
-    typealias M<n: SizeType, m: SizeType> = EigenSparseMatrix<R, n, m>
+    typealias R = RationalNumber
+    typealias M<n: SizeType, m: SizeType> = EigenMatrix<R, n, m>
     typealias M2 = M<_2, _2>
     
     func testInitByInitializer() {
@@ -49,18 +49,6 @@ class EigenSparseF2MatrixTests: XCTestCase {
     func testInitWithMissingGrid() {
         let a: M2 = [1,2,3]
         XCTAssertEqual(a, [1,2,3,0])
-    }
-    
-    func testDenseToSparse() {
-        let a: EigenMatrix<R, _2, _2> = [1,2,3,4]
-        let b = a.toSparse()
-        XCTAssertEqual(b.serialize(), [1,2,3,4])
-    }
-
-    func testSparseToDense() {
-        let a: EigenSparseMatrix<R, _2, _2> = [1,2,3,4]
-        let b = a.toDense()
-        XCTAssertEqual(b.serialize(), [1,2,3,4])
     }
 
     func testSubscript() {
@@ -117,14 +105,14 @@ class EigenSparseF2MatrixTests: XCTestCase {
 
     func testNeg() {
         let a: M2 = [1,2,3,4]
-        XCTAssertEqual(-a, [1,2,3,4])
+        XCTAssertEqual(-a, [-1,-2,-3,-4])
         XCTAssertEqual(a - a, M2.zero)
     }
 
     func testSub() {
         let a: M2 = [1,2,3,4]
         let b: M2 = [2,1,7,2]
-        XCTAssertEqual(a - b, [1,1,4,2])
+        XCTAssertEqual(a - b, [-1,1,-4,2])
     }
 
     func testMul() {
@@ -134,9 +122,9 @@ class EigenSparseF2MatrixTests: XCTestCase {
     }
 
     func testMul2() {
-        let a: M2 = [1,1,1,1]
-        let b: M2 = [1,1,1,1]
-        XCTAssertEqual(a * b, [2, 0, 0, 2])
+        let a: M2 = [1,1,-1,1]
+        let b: M2 = [1,1,1,-1]
+        XCTAssertEqual(a * b, [2, 0, 0, -2])
     }
 
     func testScalarMul() {
@@ -154,7 +142,7 @@ class EigenSparseF2MatrixTests: XCTestCase {
 
     func testInv() {
         let a: M2 = [1,2,2,3]
-        XCTAssertEqual(a.inverse!, [3,2,2,1])
+        XCTAssertEqual(a.inverse!, [-3,2,2,-1])
     }
 
     func testNonInvertible() {
@@ -178,15 +166,15 @@ class EigenSparseF2MatrixTests: XCTestCase {
 
     func testDet() {
         let a: M2 = [1,2,3,4]
-        XCTAssertEqual(a.determinant, 2)
+        XCTAssertEqual(a.determinant, -2)
     }
 
     func testDet4() {
         let a: M<_4, _4> =
-            [3,1,2,4,
+            [3,-1,2,4,
              2,1,1,3,
-             2,0,3,1,
-             0,2,1,3]
+             -2,0,3,-1,
+             0,-2,1,3]
         XCTAssertEqual(a.determinant, 66)
     }
 
@@ -257,19 +245,33 @@ class EigenSparseF2MatrixTests: XCTestCase {
 
         XCTAssertEqual(b, [2,1,4,3])
     }
+    
+    func testLUFactorize() {
+        let A: M<_5, _5> = [
+            1, 0, 1, 0, 2,
+            0, 0, 0, 3, 0,
+            0, 0, 2, 0, 3,
+            1, 0, 0, 1, 0,
+            0, 0, 1, 0, 1,
+        ]
+        let (P, Q, L, U) = A.impl.LUfactorize()
+        XCTAssertTrue(L.nonZeroEntries.allSatisfy { (i, j, a) in i >= j })
+        XCTAssertTrue(U.nonZeroEntries.allSatisfy { (i, j, a) in i <= j })
+        XCTAssertEqual(A.impl.permute(rowsBy: P, colsBy: Q), L * U)
+    }
 
     func testSolveLowerTriangular() {
         let _L: M<_4, _4> = [
             1, 0, 0, 0,
             1, 1, 0, 0,
-            1, 0, 1, 0,
-            0, 2, 0, 1
+            -1,0, 1, 0,
+            0, 2, 0, -1
         ]
         let _b: M<_4, _1> = [1, 2, 1, 1]
         
         let L = _L.impl
         let b = _b.impl
-        let x = EigenSparseMatrixImpl<R>.solveLowerTriangular(L, b)
+        let x = EigenMatrixImpl<R>.solveLowerTriangular(L, b)
         
         XCTAssertEqual(L * x, b)
     }
@@ -277,15 +279,15 @@ class EigenSparseF2MatrixTests: XCTestCase {
     func testSolveUpperTriangular() {
         let _U: M<_4, _4> = [
             1, 2, 3, 4,
-            0, 1, 0, 2,
+            0,-1, 0, 2,
             0 ,0, 1, 0,
-            0, 0, 0, 1,
+            0, 0, 0, -1,
         ]
         let _b: M<_4, _1> = [65, 3, 18, 17]
         
         let U = _U.impl
         let b = _b.impl
-        let x = EigenSparseMatrixImpl<R>.solveUpperTriangular(U, b)
+        let x = EigenMatrixImpl<R>.solveUpperTriangular(U, b)
         
         XCTAssertEqual(U * x, b)
     }
