@@ -13,8 +13,13 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/taketo1024/swm-core.git",
-            from: "1.2.6"
+            from: "1.3.1"
 //            path: "../swm-core/"
+        ),
+        .package(
+            url: "https://github.com/taketo1024/swm-matrix-tools.git",
+            from: "1.3.3"
+//            path: "../swm-matrix-tools/"
         )
     ],
     targets: [
@@ -32,6 +37,7 @@ let package = Package(
             dependencies: [
                 "CEigenBridge",
                 .product(name: "SwmCore", package: "swm-core"),
+                .product(name: "SwmMatrixTools", package: "swm-matrix-tools"),
             ],
             path: "Sources/SwmEigen"
         ),

@@ -6,6 +6,7 @@
 //
 
 import SwmCore
+import SwmMatrixTools
 import CEigenBridge
 
 public typealias EigenSparseMatrix<R, n, m> = MatrixIF<EigenSparseMatrixImpl<R>, n, m>
