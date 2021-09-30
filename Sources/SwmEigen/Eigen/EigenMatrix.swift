@@ -17,7 +17,7 @@ where R: EigenMatrixCompatible, n: SizeType
 public struct EigenMatrixImpl<R: EigenMatrixCompatible>: MatrixImpl {
     public typealias BaseRing = R
     
-    private var ptr: EigenMatrixPointer
+    internal var ptr: EigenMatrixPointer
     private var destr: Destructor
     
     private init(_ ptr: EigenMatrixPointer) {
@@ -253,42 +253,5 @@ extension MatrixIF {
     public func toSparse<R>() -> EigenSparseMatrix<R, n, m>
     where R: EigenMatrixCompatible & EigenSparseMatrixCompatible, Impl == EigenMatrixImpl<R> {
         .init(impl.toSparse())
-    }
-}
-
-// MEMO
-// EigenMatrixImpl conforms to LUFactorizable.
-
-extension EigenMatrixImpl where R: EigenMatrixCompatible_LU {
-    public func LUfactorize() -> (P: Permutation<anySize>, Q: Permutation<anySize>, L: Self, U: Self) {
-        let p = perm_init(self.size.rows)
-        let q = perm_init(self.size.cols)
-        defer {
-            perm_free(p)
-            perm_free(q)
-        }
-        let L = Self.init(size: size)
-        let U = Self.init(size: size)
-        
-        R.eigen_lu(ptr, p, q, L.ptr, U.ptr) // L, U are resized appropriately.
-        
-        return (
-            P: Permutation(fromCType: p),
-            Q: Permutation(fromCType: q).inverse!,
-            L: L,
-            U: U
-        )
-    }
-
-    public static func solveLowerTriangular(_ L: Self, _ b: Self) -> Self {
-        let x = Self(size: (L.size.cols, b.size.cols))
-        R.eigen_solve_lt(L.ptr, b.ptr, x.ptr)
-        return x
-    }
-
-    public static func solveUpperTriangular(_ U: Self, _ b: Self) -> Self {
-        let x = Self(size: (U.size.cols, b.size.cols))
-        R.eigen_solve_ut(U.ptr, b.ptr, x.ptr)
-        return x
     }
 }

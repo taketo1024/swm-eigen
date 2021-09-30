@@ -6,6 +6,7 @@
 //
 
 import SwmCore
+import SwmMatrixTools
 import CEigenBridge
 
 public typealias EigenSparseMatrix<R, n, m> = MatrixIF<EigenSparseMatrixImpl<R>, n, m>
@@ -17,7 +18,7 @@ where R: EigenSparseMatrixCompatible, n: SizeType
 public struct EigenSparseMatrixImpl<R: EigenSparseMatrixCompatible>: SparseMatrixImpl {
     public typealias BaseRing = R
     
-    private var ptr: EigenMatrixPointer
+    internal var ptr: EigenMatrixPointer
     private var destr: Destructor
     
     private init(_ ptr: EigenMatrixPointer) {
@@ -232,23 +233,5 @@ extension MatrixIF {
     public func toDense<R>() -> EigenMatrix<R, n, m>
     where R: EigenMatrixCompatible & EigenSparseMatrixCompatible, Impl == EigenSparseMatrixImpl<R> {
         .init(impl.toDense())
-    }
-}
-
-// MEMO:
-// EigenSparseMatrixImpl conforms to LUFactorizable.
-// Eigen does not provide LU factorization for rectangular sparce matrices.
-
-extension EigenSparseMatrixImpl where R: EigenSparseMatrixCompatible_LU {
-    public static func solveLowerTriangular(_ L: Self, _ b: Self) -> Self {
-        let x = Self(size: (L.size.cols, b.size.cols))
-        R.eigen_s_solve_lt(L.ptr, b.ptr, x.ptr)
-        return x
-    }
-
-    public static func solveUpperTriangular(_ U: Self, _ b: Self) -> Self {
-        let x = Self(size: (U.size.cols, b.size.cols))
-        R.eigen_s_solve_ut(U.ptr, b.ptr, x.ptr)
-        return x
     }
 }
